@@ -1,0 +1,12 @@
+.node {
+    position: absolute;
+    width: 150px;
+    height: 100px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    box-shadow: 0 0 5px #ccc;
+    transition: none;
+}
