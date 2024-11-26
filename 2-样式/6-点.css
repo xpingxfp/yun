@@ -1,0 +1,31 @@
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    /* background-color: #000; */
+    position: absolute;
+    user-select: none;
+    z-index: 3;
+}
+
+.dot:hover {
+    opacity: 0.5;
+}
+
+.dot.temp {
+    /* background-color: #f00; */
+    z-index: 1;
+}
+
+.dot.temp:hover {
+    background-color: #ff0;
+    opacity: 1;
+}
+
+.dot.input {
+    background-color: #f00;
+}
+
+.dot.output {
+    background-color: #0f0;
+}

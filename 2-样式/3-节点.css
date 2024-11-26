@@ -1,0 +1,77 @@
+.node {
+    position: absolute;
+    width: 150px;
+    /* height: 100px; */
+    background-color: #fff;
+    /* border: 1px solid #ccc; */
+    border-radius: 5px;
+    box-shadow: 0 0 5px #ccc;
+    transition: none;
+    z-index: 3;
+}
+
+.node.dragging {
+    z-index: 4;
+}
+
+.nodeBox>.header {
+    background-color: #aaa;
+    border-radius: 5px 5px 0 0;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 10px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.nodeBox>.header>input {
+    width: 80%;
+    /* height: 20px; */
+    border: none;
+    background-color: transparent;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.nodeBox>.header>input:focus {
+    outline: none;
+}
+
+.nodeBox>.header:hover {
+    background-color: #888;
+}
+
+.nodeBox>.content {
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.node>.dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #000;
+    opacity: 0.5;
+    transition: all 0.3s ease-in-out;
+}
+
+.node>.dot:hover {
+    opacity: 1;
+}
+
+.dot.input {
+    background-color: chartreuse;
+    top: 5px;
+    left: -5px;
+}
+
+.dot.output {
+    background-color: orangered;
+    top: 5px;
+    right: -5px;
+}

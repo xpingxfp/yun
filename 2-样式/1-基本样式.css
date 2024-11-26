@@ -1,0 +1,18 @@
+* {
+    margin: 0;
+    padding: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+/* *:hover {
+    box-shadow: 0 0 3px 1px rgb(0, 72, 255);
+} */
+
+.hide {
+    display: none;
+}
+
+.dragging {
+    transition: none;
+    z-index: 4;
+}
