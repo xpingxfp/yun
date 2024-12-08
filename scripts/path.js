@@ -1,14 +1,14 @@
 console.log("路径已经引入");
 
-import { BaseScript } from './1-基类.js';
-import { BaseBoard } from './4-底板.js'
-import { Menu } from "./2-菜单.js";
+import { BaseScript } from './baseScript.js';
+import { BaseBoard } from './baseBoard.js'
+import { Menu } from "./menu.js";
 
 let pathMenu = new Menu();
 pathMenu.setName('路径');
 
 let bs = new BaseScript();
-bs.addStyle('./2-样式/5-路径.css');
+bs.addStyle('./styles/path.css');
 
 let baseBox = document.querySelector('#baseBox');
 

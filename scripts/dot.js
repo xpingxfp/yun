@@ -1,10 +1,10 @@
-import { BaseScript } from './1-基类.js';
-import { Menu } from "./2-菜单.js";
-import { BaseBoard } from './4-底板.js'
-import { Path } from './5-路径.js';
+import { BaseScript } from './baseScript.js';
+import { Menu } from "./menu.js";
+import { BaseBoard } from './baseBoard.js'
+import { Path } from './path.js';
 
 let bs = new BaseScript();
-bs.addStyle("./2-样式/6-点.css");
+bs.addStyle("./styles/dot.css");
 
 let dotMenu = new Menu('点');
 
@@ -243,15 +243,28 @@ class Dot {
                 addConnectingObject(connectingObject);
                 connectingObject.addConnectingObject(Dot);
                 connectingObject.addPath(path);
+
+                let event = new CustomEvent("connectionSuccess", {
+                    detail: {
+                        dot: Dot,
+                        connectingObject: connectingObject
+                    }
+                });
+
+                // console.log(dot.parentNode.parentNode, connectingObject.dot.parentNode.parentNode);
+
+                dot.parentNode.parentNode.dispatchEvent(event);
+                connectingObject.dot.parentNode.parentNode.dispatchEvent(event);
+
+                // window.dispatchEvent(event);
+
+                // console.log("连接成功");
                 connectingObject = tempDot;
-                console.log("连接成功");
             };
             let startPos = { x: tempDot.getPos().x, y: tempDot.getPos().y };
             document.addEventListener("mousemove", move);
             document.addEventListener("mouseup", up);
         });
-
-
     }
 
     updateDot() {
@@ -304,6 +317,11 @@ function getMenuPos() {
 
     return { x: x, y: y };
 }
+
+// window.addEventListener("connectionSuccess", function (event) {
+//     console.log("connectionSuccess", event.detail.dot, event.detail.connectingObject);
+
+// });
 
 // dotMenu.show();
 

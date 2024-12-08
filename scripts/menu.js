@@ -1,8 +1,8 @@
 console.log("菜单已引入");
-import { BaseScript } from './1-基类.js';
+import { BaseScript } from './baseScript.js';
 
 let bs = new BaseScript();
-bs.addStyle("./2-样式/2-菜单.css");
+bs.addStyle("./styles/menu.css");
 
 class Menu {
     Menus = {};

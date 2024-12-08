@@ -5,8 +5,9 @@
 
 #selectBox {
     /* outline: dashed blue 1px; */
-    border: 1px solid #0af;
-    background-color: rgba(0, 255, 255, 0.02);
+    border: 1px dashed #0af;
+    background-color: rgba(0, 255, 255, 0.01);
     position: fixed;
     transition: none;
+    user-select: none;
 }

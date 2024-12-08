@@ -1,12 +1,12 @@
 console.log("底板已经引入");
 
-import { BaseScript } from './1-基类.js';
-import { Menu } from "./2-菜单.js";
+import { BaseScript } from './baseScript.js';
+import { Menu } from "./menu.js";
 
 let baseMenu = new Menu("底板");
 
 let bs = new BaseScript();
-bs.addStyle('./2-样式/4-底板.css')
+bs.addStyle('./')
 
 let BaseBoard = {
     pos: { x: 0, y: 0 },

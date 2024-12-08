@@ -32,6 +32,6 @@ class BaseScript {
 
 let bs = new BaseScript();
 
-bs.addStyle('./2-样式/1-基本样式.css');
+bs.addStyle('./styles/baseStyle.css');
 
 export { BaseScript };

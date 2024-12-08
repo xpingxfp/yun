@@ -1,12 +1,11 @@
 // console.log("");
-
-import { BaseScript } from './1-基类.js';
+import { BaseScript } from './baseScript.js';
 // import { Menu } from "./2-菜单.js";
 // import { BaseBoard } from './4-底板.js'
 // import { Path } from './5-路径.js';
 
 let bs = new BaseScript();
-bs.addStyle("./2-样式/7-选中.css");
+bs.addStyle("./styles/select.css");
 
 // let nodes = document.querySelectorAll(".node");
 // for (let i = 0; i < nodes.length; i++) {

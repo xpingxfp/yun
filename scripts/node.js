@@ -1,17 +1,17 @@
 console.log("节点已经引入");
 
-import { BaseScript } from './1-基类.js';
-import { Menu } from "./2-菜单.js";
-import { BaseBoard } from './4-底板.js'
-import { Path } from './5-路径.js';
-import { Dot } from './6-点.js';
+import { BaseScript } from './baseScript.js';
+import { Menu } from "./menu.js";
+import { BaseBoard } from './baseBoard.js'
+import { Path } from './path.js';
+import { Dot } from './dot.js';
 
 
 let nodeMenu = new Menu();
 nodeMenu.setName("节点");
 
 let bs = new BaseScript();
-bs.addStyle("./2-样式/3-节点.css");
+bs.addStyle("./styles/node.css");
 
 let nodes = [];
 
@@ -29,8 +29,8 @@ class Node {
         this.addContent();
         this.nodeAddToBoard();
         this.addRemoveEvent();
-        this.#addDrapEvent();
-        this.#addCheckedEvent();
+        this.addDrapEvent();
+        this.addCheckedEvent();
     }
 
     createNode() {
@@ -95,6 +95,10 @@ class Node {
         this.changingTheTitle();
     }
 
+    setHeader(text) {
+        this.header.innerText = text;
+    }
+
     changingTheTitle() {
         this.header.addEventListener("dblclick", function (e) {
             e.stopPropagation();
@@ -121,11 +125,16 @@ class Node {
         let div = document.createElement("div");
         div.innerHTML = "内容"
         this.content.appendChild(div);
-        this.content.contentEditable = true;
+        this.content.addEventListener("mousedown", function (e) {
+            this.contentEditable = true;
+        })
+        this.content.addEventListener("blur", function (e) {
+            this.contentEditable = false;
+        })
         this.nodeBox.appendChild(this.content);
     }
 
-    #addDrapEvent() {
+    addDrapEvent() {
         let t = this;
         let pos = this.getPos();
         if (this.header) {
@@ -210,7 +219,7 @@ class Node {
         }
     }
 
-    #addCheckedEvent() {
+    addCheckedEvent() {
         let node = this.node;
         function checkNode(e) {
             if (e.button != 0) return;
@@ -253,6 +262,14 @@ class Node {
         dot.addConnect();
         this.dots.push(dot);
     }
+
+    addToNodes() {
+        nodes.push(this);
+    }
+
+    removeFromNodes() {
+        nodes.splice(nodes.indexOf(this), 1);
+    }
 }
 
 nodeMenu.addItem("新建节点", function (e) {
@@ -273,7 +290,7 @@ nodeMenu.addItem("新建节点", function (e) {
     node.quicknodecreation();
     node.addInputDot();
     node.addOutputDot();
-    nodes.push(node);
+    node.addToNodes();
 });
 nodeMenu.addItem("打印所有节点信息", function () {
     console.log(nodes);
