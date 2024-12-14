@@ -1,0 +1,13 @@
+#dialog {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    top: calc(50% - 200px);
+    left: calc(50% - 250px);
+    z-index: 1000;
+    width: 500px;
+    height: 400px;
+    user-select: none;
+}

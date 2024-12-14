@@ -1,8 +1,10 @@
-console.log("路径已经引入");
 
 import { BaseScript } from './baseScript.js';
 import { BaseBoard } from './baseBoard.js'
 import { Menu } from "./menu.js";
+import { EventList } from './eventList.js';
+
+let eventList = new EventList();
 
 let pathMenu = new Menu();
 pathMenu.setName('路径');
@@ -40,6 +42,27 @@ class Path {
         this.path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         this.path.setAttribute('class', 'path');
         pathBox.appendChild(this.path);
+
+        this.#clickToDelete();
+    }
+
+    // 目前阶段使用点击删除的方式
+    #clickToDelete() {
+        this.path.addEventListener('mousedown', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            let index = this.dotEnd.connectingObjects.findIndex(item => item === this.dotStart);
+            this.dotEnd.connectingObjects.splice(index, 1);
+            index = this.dotStart.connectingObjects.findIndex(item => item === this.dotEnd);
+            this.dotStart.connectingObjects.splice(index, 1);
+            index = this.dotEnd.paths.findIndex(item => item === this);
+            this.dotEnd.paths.splice(index, 1);
+            index = this.dotStart.paths.findIndex(item => item === this);
+            this.dotStart.paths.splice(index, 1);
+            eventList.NinputOff(this.dotStart.dot.parentNode.parentNode);
+            this.dotEnd.dot.parentNode.parentNode.dispatchEvent(eventList.event);
+            this.remove();
+        }.bind(this));
     }
 
     getBoounds() {
@@ -69,7 +92,7 @@ class Path {
     }
 
     remove() {
-        console.log('移除路径');
+        // console.log('移除路径');
 
         if (this.path) {
             pathBox.removeChild(this.path);
@@ -176,11 +199,11 @@ function updateBox(path) {
     svgBox.style.top = `${svgBox.bounds.top}px`;
 }
 
-pathMenu.addItem('打印所有路径信息', function () {
-    console.log(paths);
-})
+// pathMenu.addItem('打印所有路径信息', function () {
+//     console.log(paths);
+// })
 
-pathMenu.show();
+// pathMenu.show();
 
 
 export { Path }

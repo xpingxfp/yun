@@ -2,6 +2,7 @@ import { BaseScript } from './baseScript.js';
 import { Menu } from "./menu.js";
 import { BaseBoard } from './baseBoard.js'
 import { Path } from './path.js';
+import { EventList } from './eventList.js';
 
 let bs = new BaseScript();
 bs.addStyle("./styles/dot.css");
@@ -178,11 +179,9 @@ class Dot {
                 if (d.type == type) return;
                 function over() {
                     connectingObject = d;
-                    // console.log("over");
                 }
                 function out() {
                     connectingObject = tempDot;
-                    // console.log("out");
                 }
                 d.dot.addEventListener("mouseover", over);
                 d.dot.addEventListener("mouseout", out);
@@ -227,7 +226,6 @@ class Dot {
                 let hasRepeat = false;
                 for (let i = 0; i < connectingObjects.length; i++) {
                     if (connectingObjects[i] == connectingObject) {
-                        // console.log("查询", connectingObjects[i]);
                         hasRepeat = true;
                         break;
                     }
@@ -244,21 +242,20 @@ class Dot {
                 connectingObject.addConnectingObject(Dot);
                 connectingObject.addPath(path);
 
-                let event = new CustomEvent("connectionSuccess", {
-                    detail: {
-                        dot: Dot,
-                        connectingObject: connectingObject
-                    }
-                });
+                let event = new EventList();
 
-                // console.log(dot.parentNode.parentNode, connectingObject.dot.parentNode.parentNode);
+                let inputDot, outputDot;
+                if (type == 'input') {
+                    inputDot = Dot;
+                    outputDot = connectingObject;
+                } else {
+                    inputDot = connectingObject;
+                    outputDot = Dot;
+                }
 
-                dot.parentNode.parentNode.dispatchEvent(event);
-                connectingObject.dot.parentNode.parentNode.dispatchEvent(event);
+                event.Noutput(inputDot.dot.parentNode.parentNode)
+                outputDot.dot.parentNode.parentNode.dispatchEvent(event.event);
 
-                // window.dispatchEvent(event);
-
-                // console.log("连接成功");
                 connectingObject = tempDot;
             };
             let startPos = { x: tempDot.getPos().x, y: tempDot.getPos().y };

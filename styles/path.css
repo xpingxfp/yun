@@ -1,7 +1,7 @@
 #svgBox {
     position: absolute;
     z-index: -1;
-    border: 1px solid #ff0000;
+    /* border: 1px solid #ff0000; */
     transition: none;
 }
 
@@ -17,34 +17,4 @@
 #pathBox path:hover {
     transition: all 0.3s ease-in-out;
     stroke: aqua;
-}
-
-#pathStartDot {
-    width: 10px;
-    height: 10px;
-    background-color: #f00;
-    border-radius: 50%;
-    position: absolute;
-    transform: translate(200px, 200px);
-    z-index: 10;
-    transition: none;
-}
-
-#pathStartDot:hover {
-    background-color: #ff00005f;
-}
-
-#pathEndDot {
-    width: 10px;
-    height: 10px;
-    background-color: #f0f;
-    border-radius: 50%;
-    position: absolute;
-    transform: translate(100px, 100px);
-    z-index: 10;
-    transition: none;
-}
-
-#pathEndDot:hover {
-    background-color: #ff00ff5f;
 }

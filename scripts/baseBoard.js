@@ -1,18 +1,16 @@
 console.log("底板已经引入");
 
 import { BaseScript } from './baseScript.js';
-import { Menu } from "./menu.js";
-
-let baseMenu = new Menu("底板");
 
 let bs = new BaseScript();
-bs.addStyle('./')
+bs.addStyle('./styles/baseBoard.css')
 
 let BaseBoard = {
     pos: { x: 0, y: 0 },
     scale: 1,
 }
 
+// 创建底板
 let baseboard = document.createElement('div');
 baseboard.id = 'baseboard';
 document.body.appendChild(baseboard);
@@ -29,6 +27,7 @@ let baseBox = document.createElement('div');
 baseBox.id = 'baseBox';
 baseScaleBox.appendChild(baseBox);
 
+// 移动页面
 baseboard.addEventListener('mousedown', (e) => {
     if (e.button == 1) {
         baseboard.classList.add('dragging');
@@ -60,34 +59,10 @@ baseboard.addEventListener('mousedown', (e) => {
     }
 })
 
-// document.addEventListener('DOMContentLoaded', function () {
-//     baseboard.addEventListener('wheel', function (event) {
-//         event.preventDefault();
-
-//         let scale = BaseBoard.scale;
-
-//         scale += event.deltaY / 1000;
-//         scale = Math.max(0.1, Math.min(5, scale));
-
-//         BaseBoard.scale = scale;
-
-//         let cx = event.clientX
-//         let cy = event.clientY
-
-//         let dx = (cx * scale - BaseBoard.pos.x);
-//         let dy = (cy * scale - BaseBoard.pos.y);
-
-//         baseScaleBox.style.transformOrigin = `${dx}px ${dy}px`;
-//         baseScaleBox.style.transform = `scale(${BaseBoard.scale})`;
-//     })
-// })
-
-baseMenu.addItem("打印底板坐标", () => {
-    console.log(BaseBoard.pos);
-});
-// baseMenu.addItem("打印底板缩放", () => {
-//     console.log(BaseBoard.scale);
+// baseMenu.addItem("打印底板坐标", () => {
+//     console.log(BaseBoard.pos);
 // });
-baseMenu.show();
+
+// baseMenu.show();
 
 export { BaseBoard }

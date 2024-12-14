@@ -1,0 +1,5 @@
+.dialysisNode .header .copyBtn {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+}

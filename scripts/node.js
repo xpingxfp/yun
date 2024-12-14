@@ -1,28 +1,39 @@
-console.log("节点已经引入");
+// 用于创建节点
 
+// 导入依赖
 import { BaseScript } from './baseScript.js';
 import { Menu } from "./menu.js";
 import { BaseBoard } from './baseBoard.js'
 import { Path } from './path.js';
 import { Dot } from './dot.js';
+import { EventList } from './eventList.js';
 
+let eventList = new EventList();
 
+// 创建节点菜单
 let nodeMenu = new Menu();
 nodeMenu.setName("节点");
 
+// 引入节点样式
 let bs = new BaseScript();
 bs.addStyle("./styles/node.css");
 
+// 整合节点
 let nodes = [];
 
+// 节点类
 class Node {
     node = null;
     pos = { x: 0, y: 0 };
+    size = { w: 200, h: 100 };
     nodeBox = null;
     header = null;
     content = null;
     dots = [];
+    type = "";
+    data = null;
 
+    // 快速创建节点
     quicknodecreation() {
         this.createNode();
         this.addHeader();
@@ -31,16 +42,35 @@ class Node {
         this.addRemoveEvent();
         this.addDrapEvent();
         this.addCheckedEvent();
+        this.resize();
+        this.#eventDetection();
     }
 
+    // 创建节点
     createNode() {
         this.node = document.createElement("div");
         this.node.classList.add("node");
+
+        this.node.style.width = `${this.size.w}px`;
+        this.node.style.height = `${this.size.h}px`;
+
         this.nodeBox = document.createElement("div");
         this.nodeBox.classList.add("nodeBox");
+
         this.node.appendChild(this.nodeBox);
     }
 
+    // 为节点添加类
+    addClass(className) {
+        this.node.classList.add(className);
+    }
+
+    // 移除节点类
+    removeClass(className) {
+        this.node.classList.remove(className);
+    }
+
+    // 设置节点位置
     setPos(x, y) {
         if (!this.node) this.createNode();
         this.pos.x = x;
@@ -48,14 +78,17 @@ class Node {
         this.node.style.transform = `translate(${x}px, ${y}px)`;
     }
 
+    // 获取节点位置
     getPos() {
         return this.pos;
     }
 
+    // 计算节点显示位置
     calculatingDisplay() {
         this.node.style.transform = `translate(${this.pos.x}px, ${this.pos.y}px)`;
     }
 
+    // 节点添加到画布
     nodeAddToBoard() {
         let baseBox = document.getElementById("baseBox");
         if (!this.node) this.createNode();
@@ -63,6 +96,7 @@ class Node {
         this.calculatingDisplay();
     }
 
+    // 节点移除
     removeNode() {
         if (this.node) {
             this.node.remove();
@@ -74,6 +108,7 @@ class Node {
         }
     }
 
+    // 添加移除节点事件菜单项
     addRemoveEvent() {
         let removeNode = this.removeNode.bind(this);
         this.node.addEventListener("contextmenu", function (e) {
@@ -86,19 +121,20 @@ class Node {
         });
     }
 
+    // 添加节点头部
     addHeader() {
         this.header = document.createElement("div");
         this.header.classList.add("header");
         this.header.innerText = "节点";
         this.nodeBox.appendChild(this.header);
-
-        this.changingTheTitle();
     }
 
+    // 设置节点头部内容
     setHeader(text) {
         this.header.innerText = text;
     }
 
+    // 节点头部双击修改标题
     changingTheTitle() {
         this.header.addEventListener("dblclick", function (e) {
             e.stopPropagation();
@@ -119,21 +155,41 @@ class Node {
         });
     }
 
+    // 添加节点内容
     addContent() {
         this.content = document.createElement("div");
         this.content.classList.add("content");
         let div = document.createElement("div");
-        div.innerHTML = "内容"
+        div.innerHTML = ""
         this.content.appendChild(div);
+        this.nodeBox.appendChild(this.content);
+
+        // this.#addContentEditable();
+    }
+
+    // 设置节点内容
+    #addContentEditable() {
+        this.content.Editable = true;
+        if (!this.content.Editable) return;
         this.content.addEventListener("mousedown", function (e) {
             this.contentEditable = true;
         })
         this.content.addEventListener("blur", function (e) {
             this.contentEditable = false;
         })
-        this.nodeBox.appendChild(this.content);
     }
 
+    // 设置节点内容
+    #removeContentEditable() {
+        this.content.Editable = false;
+        this.content.addEventListener("mousedown", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            this.contentEditable = false;
+        });
+    }
+
+    // 添加节点拖拽事件
     addDrapEvent() {
         let t = this;
         let pos = this.getPos();
@@ -219,6 +275,7 @@ class Node {
         }
     }
 
+    // 添加节点选中事件
     addCheckedEvent() {
         let node = this.node;
         function checkNode(e) {
@@ -245,6 +302,7 @@ class Node {
         });
     }
 
+    // 添加输入点
     addInputDot() {
         let dot = new Dot();
         dot.init();
@@ -254,6 +312,7 @@ class Node {
         this.dots.push(dot);
     }
 
+    // 添加输出点
     addOutputDot() {
         let dot = new Dot();
         dot.init();
@@ -263,17 +322,157 @@ class Node {
         this.dots.push(dot);
     }
 
+    // 将节点添加到节点数组中
     addToNodes() {
         nodes.push(this);
     }
 
+    // 从节点数组中移除节点
     removeFromNodes() {
         nodes.splice(nodes.indexOf(this), 1);
     }
+
+    // 设置节点大小
+    setSize(w, h) {
+        this.size.w = w;
+        this.size.h = h;
+        this.node.style.width = `${w}px`;
+        this.node.style.height = `${h}px`;
+    }
+
+    // 节点大小调整
+    resize() {
+        let resizerBottomRight = document.createElement("div");
+        resizerBottomRight.classList.add("resizerBottomRight");
+        this.nodeBox.appendChild(resizerBottomRight);
+
+        let setSize = this.setSize.bind(this);
+        let size = this.size;
+        let dots = this.dots;
+
+        resizerBottomRight.addEventListener("mousedown", function (event) {
+            if (event.button != 0) return;
+            let startX = event.clientX;
+            let startY = event.clientY;
+
+            let startSize = { w: size.w, h: size.h };
+
+            let timeoutId;
+            let startResize = function () {
+                document.addEventListener("mousemove", resize);
+                document.addEventListener("mouseup", up);
+            };
+
+            let cancelResize = () => {
+                clearTimeout(timeoutId);
+            };
+
+            timeoutId = setTimeout(startResize, 50); // 防止鼠标抖动
+
+            document.addEventListener("mouseup", cancelResize);
+
+            let resize = function (event) {
+                let endX = event.clientX;
+                let endY = event.clientY;
+
+                let offsetX = endX - startX;
+                let offsetY = endY - startY;
+
+                let w = startSize.w + offsetX;
+                let h = startSize.h + offsetY;
+
+                if (w < 100) w = 100;
+                if (h < 40) h = 40;
+
+                setSize(w, h);
+                dots.forEach(dot => {
+                    dot.updateDot();
+                });
+            };
+            let up = function () {
+                document.removeEventListener("mousemove", resize);
+                document.removeEventListener("mouseup", up);
+            };
+
+        });
+    }
+
+    // 事件检测
+    #eventDetection() {
+        let node = this.node;
+        let NODE = this;
+        let removeNode = this.removeNode.bind(this);
+        let dots = this.dots;
+        let data = this.data;
+        let type = this.type;
+        node.addEventListener("Ndelete", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            removeNode();
+        });
+        node.addEventListener("Noutput", function (e) {
+            // console.log("传出数据", e.detail);
+            let outputObject = e.detail.outputObject;
+            eventList.Ninput(node, null, NODE);
+            outputObject.dispatchEvent(eventList.event);
+        });
+        node.addEventListener("Ninput", function (e) {
+            // console.log("传入数据", e.detail);
+        });
+
+        node.addEventListener("Nupdate", async function (e) {
+            // 确保只处理一次更新，避免无限循环
+            if (this.isUpdating) return;
+            this.isUpdating = true;
+
+            try {
+                let detailData = e.detail && e.detail.data;
+
+                if (detailData && detailData.type === "funcNode") {
+                    // 使用 Promise 和 await 来等待异步操作完成
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    // 更新数据
+                    this.data = detailData;
+                }
+
+                // 收集所有需要更新的节点
+                const updatePromises = dots
+                    .filter(dot => dot.type === "output")
+                    .flatMap(dot =>
+                        dot.connectingObjects.map(connectingObject => {
+                            const targetNode = connectingObject.dot.parentNode.parentNode;
+                            // 返回一个Promise来处理每个节点的更新
+                            return new Promise((resolve) => {
+                                eventList.Nupdate(NODE);
+                                targetNode.dispatchEvent(eventList.event);
+                                resolve();
+                            });
+                        })
+                    );
+
+                // 等待所有更新完成
+                await Promise.all(updatePromises);
+
+            } catch (error) {
+                console.error('Error during Nupdate:', error);
+            } finally {
+                // 更新完成后重置标志位
+                this.isUpdating = false;
+            }
+        });
+
+
+        node.addEventListener("error", function (e) {
+            console.error("节点发生错误", e.detail);
+            data = null;
+        });
+    }
 }
 
+// 在节点菜单块中添加新建节点选项
 nodeMenu.addItem("新建节点", function (e) {
     let node = new Node();
+    // 计算鼠标点击位置
     let menuBox = document.getElementById("menuBox");
     let x = menuBox.offsetLeft;
     let y = menuBox.offsetTop;
@@ -286,15 +485,19 @@ nodeMenu.addItem("新建节点", function (e) {
     x = (x / BBScale);
     y = (y / BBScale);
 
+    // 新建节点并设置位置
     node.setPos(x, y);
     node.quicknodecreation();
     node.addInputDot();
     node.addOutputDot();
     node.addToNodes();
 });
+
+// 在节点菜单块中添加打印节点信息选项
 nodeMenu.addItem("打印所有节点信息", function () {
     console.log(nodes);
 });
+// 在菜单中添加节点菜单块
 nodeMenu.show();
 
 export { Node };

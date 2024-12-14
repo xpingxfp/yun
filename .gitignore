@@ -1,3 +1,4 @@
-# This file specifies intentionally untracked files to ignore.
 test/
 .vscode/
+node_modules/
+API/*
