@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>各文件解释</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <a href="./index.html">返回首页</a><br><br>
+    <span>文件位置</span>
+    <ul>
+        <li>index.html</li>
+        <li>js文件：scripts/*</li>
+        <li>css文件：styles/*</li>
+    </ul>
+    <span>js文件说明</span>
+    <div id="importScript.js" class="box">
+        <span class="filename">importScript.js</span>
+        <p>用于引入各种初始化脚本</p>
+    </div>
+    <div id="baseScript.js" class="box">
+        <span class="filename">baseScript.js</span>
+        <p>基础脚本，用于一些基础功能</p>
+        <p>暴露了一个类<span class="classname">BaseScript</span>其无需要传入初始参数，功能如下：</p>
+        <p><span class="classname">BaseScript.addStyle(url)</span>用于向页面添加外部样式表。</p>
+        <p><span class="classname">BaseScript.addScript(url)</span>用于向页面添加外部脚本。</p>
+        <p><span class="classname">BaseScript.drag(element)</span>用于给元素添加拖拽功能。<span class="TIPS">不建议使用</span>
+        </p>
+        <span class="M1">其他功能：</span>
+        <p><span class="classname">document.onkeydown</span>事件，用于被选中（.checked）目标，当按下X键时的删除目标，并为目标添加删除事件（"delete"）。
+        </p>
+        <p>通过BaseScript引入了baseStyle.css文件。</p>
+    </div>
+    <div id="" class="box">
+        <span class="filename">menu.js</span>
+        <p>用于创建右键菜单，并通过BaseScript引入了menu.css文件。</p>
+        <span class="M1">菜单结构：</span>
+
+
+        <pre><code>&lt;div id="menuBox" style="top: 0; left: 0;"&gt;<div style="border: 1px solid black;">// 菜单块
+    &lt;div&gt;
+        &lt;div class="menuTitle"&gt;TITLE&lt;/div&gt;// 菜单标题
+        &lt;div class="menuItem" name="ITEM1"&gt;ITEM1&lt;/div&gt;// 菜单项
+        &lt;div class="menuItem" name="ITEM2"&gt;ITEM2&lt;/div&gt;// 菜单项
+        ...
+    &lt;/div&gt;</div>    &lt;div&gt;...&lt;/div&gt;
+    ...
+&lt;/div&gt;</code></pre>
+
+
+        <p>暴露了一个类<span class="classname">Menu</span>，每new一个Menu实例，就在 <span
+                class="idname">#menuBox</span>中添加一个菜单块，其初始参数为（name = ""）可设置标题，功能如下：</p>
+        <p><span class="classname">Menu.setName(name)</span>用于设置菜单标题，可多次使用，但是只有最后一次有效。<br>
+            <code>&lt;div class="menuTitle"&gt;TITLE&lt;/div&gt;</code>
+        </p>
+        <p><span class="classname">Menu.addItem(name,
+                command)</span>用于添加菜单项，可多次使用，其中command（函数）为设置菜单项的点击后执行的命令。<br>
+            <code>&lt;div class="menuItem" name="ITEM1"&gt;ITEM1&lt;/div&gt;</code>
+        </p>
+        <p><span class="classname">Menu.removeItem(name)</span>用于删除菜单项</p>
+        <p><span class="classname">Menu.getItem(name)</span>用于获取菜单项</p>
+        <p><span class="classname">Menu.hasItem(name)</span>用于判断是否存在菜单项</p>
+        <p><span class="classname">Menu.hideItem(name)</span>用于隐藏菜单项</p>
+        <p><span class="classname">Menu.showItem(name)</span>用于显示菜单项</p>
+        <p><span class="classname">Menu.show(element =
+                document)</span>用于显示菜单和隐藏菜单。【显示菜单】当右键element时，其创建的菜单块在<span
+                class="idname">#menuBox</span>中显示。【隐藏菜单】当鼠标click后，<span class="idname">#menuBox</span>隐藏</p>
+
+        <span class="M1">菜单注意事项：</span>
+        <ul>
+            <li>在body中创建菜单容器<span class="idname">#menuBox</span><span class="TIPS red">保留id，若使用该id，菜单失效</span></li>
+            <li><span class="idname">#menuBox</span>样式为position: fixed;overflow-y: auto;<span
+                    class="TIPS red">不可修改，否则菜单显示异常</span></li>
+        </ul>
+    </div>
+    <div id="node.js" class="box">
+        <span class="filename">node.js</span>
+        <p>用于创建节点，并通过BaseScript引入了node.css文件。</p>
+    </div>
+</body>
+
+</html>
