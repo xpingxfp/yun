@@ -15,6 +15,11 @@
 }
 
 #pathBox path:hover {
-    transition: all 0.3s ease-in-out;
+    transition: none;
+    stroke: aqua;
+}
+
+.path.checked {
+    stroke-width: 4;
     stroke: aqua;
 }

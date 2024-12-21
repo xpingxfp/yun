@@ -21,6 +21,8 @@ bs.addStyle("./styles/node.css");
 // 整合节点
 let nodes = [];
 
+let passingLists = [];
+
 // 节点类
 class Node {
     node = null;
@@ -31,7 +33,7 @@ class Node {
     content = null;
     dots = [];
     type = "";
-    data = null;
+    data = {};
 
     // 快速创建节点
     quicknodecreation() {
@@ -289,7 +291,7 @@ class Node {
                     checked.classList.remove("checked");
                 });
             }
-            node.classList.add("checked");
+            node.classList.toggle("checked");
         }
         node.addEventListener("mousedown", checkNode);
         document.addEventListener("mousedown", function (e) {
@@ -397,6 +399,22 @@ class Node {
         });
     }
 
+    setData(data) {
+        this.data = data;
+    }
+
+    getData() {
+        return this.data;
+    }
+
+    setType(type) {
+        this.type = type;
+    }
+
+    getType() {
+        return this.type;
+    }
+
     // 事件检测
     #eventDetection() {
         let node = this.node;
@@ -404,63 +422,80 @@ class Node {
         let removeNode = this.removeNode.bind(this);
         let dots = this.dots;
         let data = this.data;
-        let type = this.type;
+        let getType = this.getType.bind(this);
+        let setData = this.setData.bind(this);
+        let getData = this.getData.bind(this);
+
         node.addEventListener("Ndelete", function (e) {
             e.stopPropagation();
             e.preventDefault();
             removeNode();
         });
+
         node.addEventListener("Noutput", function (e) {
             // console.log("传出数据", e.detail);
             let outputObject = e.detail.outputObject;
-            eventList.Ninput(node, null, NODE);
+            let type = getType();
+            eventList.Ninput(node, null, NODE, type);
             outputObject.dispatchEvent(eventList.event);
         });
+
         node.addEventListener("Ninput", function (e) {
             // console.log("传入数据", e.detail);
+            // 将获取的添加到data中
         });
 
-        node.addEventListener("Nupdate", async function (e) {
-            // 确保只处理一次更新，避免无限循环
-            if (this.isUpdating) return;
-            this.isUpdating = true;
+        node.addEventListener("NgetData", function (e) {
+            // console.log("获取数据", e.detail)
+            // 向上级发送需要的数据
+            let upNode = e.detail.node;
+            eventList.Noutput(node, data);
+            upNode.dispatchEvent(eventList.event);
+        })
 
-            try {
-                let detailData = e.detail && e.detail.data;
+        node.addEventListener("Nupdate", function (e) {
+            // console.log("更新节点", e.detail)
+            // 向上级发送输出数据事件
 
-                if (detailData && detailData.type === "funcNode") {
-                    // 使用 Promise 和 await 来等待异步操作完成
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                    // 更新数据
-                    this.data = detailData;
+            let upNode = e.detail.node;
+            eventList.Noutput(node, null);
+            upNode.dispatchEvent(eventList.event);
+            // 向自己添加更新中事件
+            eventList.Nupdating();
+            node.dispatchEvent(eventList.event);
+        });
+
+        node.addEventListener("Nupdating", function (e) {
+            // console.log("节点更新中", e.detail)
+            if (passingLists.includes(node)) {
+                // removeNode();
+                dots.forEach(dot => {
+                    let lastPath = dot.paths[dot.paths.length - 1];
+                    lastPath.removePath();
+                });
+                alert("您似乎创建了一个无法停止的循环\nYou seem to have created a loop that can't be stopped");
+                passingLists = [];
+                return;
+            };
+            passingLists.push(node);
+        });
+
+        node.addEventListener("NupdateComplete", function (e) {
+            // console.log("更新节点完成", e.detail)
+            // 向连接的节点发送更新事件
+            let nextNodes = [];
+            dots.forEach(dot => {
+                if (dot.type == "output") {
+                    dot.connectingObjects.forEach(connectingObject => {
+                        eventList.Nupdate(node);
+                        let nextNode = connectingObject.dot.parentNode.parentNode;
+                        nextNodes.push(nextNode);
+                        nextNode.dispatchEvent(eventList.event);
+                    });
                 }
-
-                // 收集所有需要更新的节点
-                const updatePromises = dots
-                    .filter(dot => dot.type === "output")
-                    .flatMap(dot =>
-                        dot.connectingObjects.map(connectingObject => {
-                            const targetNode = connectingObject.dot.parentNode.parentNode;
-                            // 返回一个Promise来处理每个节点的更新
-                            return new Promise((resolve) => {
-                                eventList.Nupdate(NODE);
-                                targetNode.dispatchEvent(eventList.event);
-                                resolve();
-                            });
-                        })
-                    );
-
-                // 等待所有更新完成
-                await Promise.all(updatePromises);
-
-            } catch (error) {
-                console.error('Error during Nupdate:', error);
-            } finally {
-                // 更新完成后重置标志位
-                this.isUpdating = false;
-            }
+                if (nextNodes.length == 0) passingLists = [];
+            });
         });
-
 
         node.addEventListener("error", function (e) {
             console.error("节点发生错误", e.detail);

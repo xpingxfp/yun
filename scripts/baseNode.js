@@ -71,13 +71,18 @@ function createNode(node) {
 function intNode() {
     let node = new Node();
     createNode(node);
-    node.type = 'number';
+    node.setType('int');
     node.addClass('NT_number');
+    node.addClass('NT_int');
     node.setHeader('整数');
     let input = document.createElement('input');
     node.content.appendChild(input);
     node.setSize(100, 50);
     node.data = { value: 0 };
+
+    function setValue() {
+
+    }
 
     input.addEventListener('change', function () {
         let value = parseInt(input.value);
@@ -85,31 +90,26 @@ function intNode() {
             input.value = 0;
         }
         node.data.value = value;
-        eventList.Nupdate(node);
+        eventList.NupdateComplete();
         node.node.dispatchEvent(eventList.event)
     });
 
-    node.node.addEventListener('Ninput', function (e) {
-        let value = e.detail.node.data.value;
-        node.data.value = value;
-        input.value = value;
+    node.node.addEventListener('Ninput', (e) => {
+        let inType = e.detail.type;
+        if (inType == 'int') {
+            let value = parseInt(e.detail.node.data.value);
+            node.data.value = value;
+            eventList.Nupdating();
+            node.node.dispatchEvent(eventList.event)
+        }
     });
 
-    node.node.addEventListener('Nupdate', function (e) {
-        let value = e.detail.node.data.value;
-        node.data.value = value;
-        input.value = value;
-        node.dots.forEach(dot => {
-            if (dot.type == "output") {
-                // console.log(dot);
-                dot.connectingObjects.forEach(connectingObject => {
-                    // console.log(connectingObject.dot.parentNode.parentNode);
-                    eventList.Nupdate(node);
-                    connectingObject.dot.parentNode.parentNode.dispatchEvent(eventList.event);
-                });
-            }
-        });
+    node.node.addEventListener('Nupdating', (e) => {
+        input.value = node.data.value;
+        eventList.NupdateComplete();
+        node.node.dispatchEvent(eventList.event)
     });
+
 }
 
 dMenu.addItem('整数', intNode);

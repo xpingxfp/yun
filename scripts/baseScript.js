@@ -49,14 +49,13 @@ bs.addStyle('./styles/baseStyle.css');
 
 // 创建删除事件
 let event = new EventList();
-event.Ndelete();
 
 // 删除.checked元素
 function removeChecked() {
     let checked = document.querySelectorAll('.checked');
     for (let i = 0; i < checked.length; i++) {
-        checked[i].parentNode.removeChild(checked[i]);
         // 为删除的元素添加一个删除事件
+        event.Ndelete();
         checked[i].dispatchEvent(event.event);
     }
 }

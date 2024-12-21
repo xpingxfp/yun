@@ -8,7 +8,7 @@ class EventList {
         let eventDetail = {
             dot: dot,
             connectingObject: connectingObject,
-            type: "NconnectionSuccess"
+            eventName: "NconnectionSuccess"
         };
         this.event = new CustomEvent("NconnectionSuccess", { detail: eventDetail });
 
@@ -16,14 +16,15 @@ class EventList {
 
     Ndelete() {
         let eventDetail = {
-            type: "Ndelete"
+            eventName: "Ndelete"
         };
         this.event = new CustomEvent("Ndelete", { detail: eventDetail });
     }
 
-    Ninput(inputObject, content, node) {
+    Ninput(inputObject, content, node, type) {
         let eventDetail = {
-            type: "Ninput",
+            eventName: "Ninput",
+            type: type,
             inputObject: inputObject,
             content: content,
             node: node
@@ -33,7 +34,7 @@ class EventList {
 
     NinputOff(inputObject) {
         let eventDetail = {
-            type: "NinputOff",
+            eventName: "NinputOff",
             inputObject: inputObject
         };
         this.event = new CustomEvent("NinputOff", { detail: eventDetail });
@@ -41,7 +42,7 @@ class EventList {
 
     Noutput(outputObject, content) {
         let eventDetail = {
-            type: "Noutput",
+            eventName: "Noutput",
             outputObject: outputObject,
             content: content
         };
@@ -50,23 +51,48 @@ class EventList {
 
     NoutputOff(outputObject) {
         let eventDetail = {
-            type: "NoutputOff",
+            eventName: "NoutputOff",
             outputObject: outputObject
         };
         this.event = new CustomEvent("NoutputOff", { detail: eventDetail });
     }
 
+    NgetData() {
+        let eventDetail = {
+            eventName: "NgetData"
+        };
+        this.event = new CustomEvent("NgetData", { detail: eventDetail });
+    }
+
     Nupdate(node) {
         let eventDetail = {
-            type: "Nupdate",
+            eventName: "Nupdate",
             node: node
         };
         this.event = new CustomEvent("Nupdate", { detail: eventDetail });
     }
 
+    Nupdating() {
+        let eventDetail = {
+            eventName: "Nupdating"
+        };
+        this.event = new CustomEvent("Nupdating", { detail: eventDetail });
+    }
+
+    NupdateComplete() {
+        let eventDetail = {
+            eventName: "NupdateComplete",
+        };
+        this.event = new CustomEvent("NupdateComplete", { detail: eventDetail });
+    }
+
+    NinTransitEnd() {
+
+    }
+
     error() {
         let eventDetail = {
-            type: "error"
+            eventName: "error"
         };
         this.event = new CustomEvent("error", { detail: eventDetail });
     }

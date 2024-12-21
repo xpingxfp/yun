@@ -43,26 +43,35 @@ class Path {
         this.path.setAttribute('class', 'path');
         pathBox.appendChild(this.path);
 
-        this.#clickToDelete();
+        this.#eventDetection();
     }
 
     // 目前阶段使用点击删除的方式
-    #clickToDelete() {
+    #eventDetection() {
         this.path.addEventListener('mousedown', function (event) {
             event.preventDefault();
             event.stopPropagation();
-            let index = this.dotEnd.connectingObjects.findIndex(item => item === this.dotStart);
-            this.dotEnd.connectingObjects.splice(index, 1);
-            index = this.dotStart.connectingObjects.findIndex(item => item === this.dotEnd);
-            this.dotStart.connectingObjects.splice(index, 1);
-            index = this.dotEnd.paths.findIndex(item => item === this);
-            this.dotEnd.paths.splice(index, 1);
-            index = this.dotStart.paths.findIndex(item => item === this);
-            this.dotStart.paths.splice(index, 1);
-            eventList.NinputOff(this.dotStart.dot.parentNode.parentNode);
-            this.dotEnd.dot.parentNode.parentNode.dispatchEvent(eventList.event);
-            this.remove();
+            // this.removePath();
+            this.path.classList.add('checked');
         }.bind(this));
+
+        this.path.addEventListener('Ndelete', function (event) {
+            this.removePath();
+        }.bind(this));
+    }
+
+    removePath() {
+        let index = this.dotEnd.connectingObjects.findIndex(item => item === this.dotStart);
+        this.dotEnd.connectingObjects.splice(index, 1);
+        index = this.dotStart.connectingObjects.findIndex(item => item === this.dotEnd);
+        this.dotStart.connectingObjects.splice(index, 1);
+        index = this.dotEnd.paths.findIndex(item => item === this);
+        this.dotEnd.paths.splice(index, 1);
+        index = this.dotStart.paths.findIndex(item => item === this);
+        this.dotStart.paths.splice(index, 1);
+        eventList.NinputOff(this.dotStart.dot.parentNode.parentNode);
+        this.dotEnd.dot.parentNode.parentNode.dispatchEvent(eventList.event);
+        this.remove();
     }
 
     getBoounds() {
