@@ -59,18 +59,19 @@ function getMenuPos() {
     return { x: x, y: y };
 }
 
-function createNode(node) {
+function createNode() {
+    let node = new Node();
     let menuPos = getMenuPos();
     node.setPos(menuPos.x, menuPos.y);
     node.quicknodecreation();
     node.addInputDot();
     node.addOutputDot();
     node.addToNodes();
+    return node;
 }
 
 function intNode() {
-    let node = new Node();
-    createNode(node);
+    let node = createNode();
     node.setType('int');
     node.addClass('NT_number');
     node.addClass('NT_int');
@@ -79,10 +80,6 @@ function intNode() {
     node.content.appendChild(input);
     node.setSize(100, 50);
     node.data = { value: 0 };
-
-    function setValue() {
-
-    }
 
     input.addEventListener('change', function () {
         let value = parseInt(input.value);
@@ -99,9 +96,9 @@ function intNode() {
         if (inType == 'int') {
             let value = parseInt(e.detail.node.data.value);
             node.data.value = value;
-            eventList.Nupdating();
-            node.node.dispatchEvent(eventList.event)
         }
+        eventList.Nupdating();
+        node.node.dispatchEvent(eventList.event)
     });
 
     node.node.addEventListener('Nupdating', (e) => {
@@ -113,6 +110,46 @@ function intNode() {
 }
 
 dMenu.addItem('整数', intNode);
+
+function numbertNode() {
+    let node = createNode();
+    node.setType('number');
+    node.addClass('NT_number');
+    node.setHeader('数字');
+    let input = document.createElement('input');
+    node.content.appendChild(input);
+    node.setSize(100, 50);
+    node.data = { value: 0, type: 'num' };
+
+    input.addEventListener('change', function () {
+        let value = parseFloat(input.value);
+        if (isNaN(value)) {
+            input.value = 0;
+        }
+        node.data.value = value;
+        eventList.NupdateComplete();
+        node.node.dispatchEvent(eventList.event)
+    });
+
+    node.node.addEventListener('Ninput', (e) => {
+        let inType = e.detail.type;
+        if (inType == 'number') {
+            let value = parseFloat(e.detail.node.data.value);
+            node.data.value = value;
+        }
+        eventList.Nupdating();
+        node.node.dispatchEvent(eventList.event)
+    });
+
+    node.node.addEventListener('Nupdating', (e) => {
+        input.value = node.data.value;
+        eventList.NupdateComplete();
+        node.node.dispatchEvent(eventList.event)
+    });
+
+}
+
+dMenu.addItem('数字', numbertNode);
 
 dMenu.show();
 

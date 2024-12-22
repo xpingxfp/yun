@@ -47,10 +47,12 @@ function addNode() {
     addNode.setSize(100, 50);
     addNode.type = "funcNode";
 
+    let node = addNode.node;
+
     let inputValue = [];
     addNode.data = { inputValue: inputValue, value: "" };
     // 计算inputValue
-    async function calculate() {
+    function calculate() {
         let result = 0;
 
         for (let i = 0; i < inputValue.length; i++) {
@@ -59,7 +61,9 @@ function addNode() {
                 result += item.value;
             } else if (item.type === "funcNode") {
                 // 异步等待100ms然后增加值
-                result += await new Promise(resolve => setTimeout(() => resolve(item.value), 100));
+                result += item.value;
+            } else {
+                result += "not find type";
             }
         }
 
@@ -67,20 +71,72 @@ function addNode() {
         addNode.content.innerHTML = result;
     }
 
-    addNode.node.addEventListener("Ninput", (e) => {
-        eventList.Nupdate(addNode);
-        this.dispatchEvent(eventList.event)
-        let node = e.detail.node
-        let value = {
-            type: node.type,
-            value: node.data.value,
-            node: node
+    // 分析传入内容
+    function analyzeInput(data) {
+        let node = data.node;
+        let value = null;
+        if (node.type === "int") {
+            value = {
+                type: "number",
+                value: node.data.value,
+                node: node
+            }
+        }
+        else if (node.type === "float") {
+            value = {
+                type: "number",
+                value: node.data.value,
+                node: node
+            }
+        }
+        else if (node.type === "number") {
+            value = {
+                type: "number",
+                value: node.data.value,
+                node: node
+            }
+        }
+        else if (node.type === "funcNode") {
+            value = {
+                type: "funcNode",
+                value: node.data.value,
+                node: node
+            }
+        } else {
+            value = "not find type";
+        }
+        // 查询inputValue是否已经存在
+        let index = inputValue.findIndex(item => item.node === node);
+        if (index > -1) {
+            inputValue.splice(index, 1);
         }
         inputValue.push(value);
-        // console.log(inputValue);
-        calculate();
+    }
+
+    node.addEventListener("Ninput", (e) => {
+
+        analyzeInput(e.detail);
+
+        eventList.Nupdating();
+        node.dispatchEvent(eventList.event)
     });
 
+    node.addEventListener("Nupdating", (e) => {
+        // console.log(inputValue);
+        calculate();
+        eventList.NupdateComplete();
+        node.dispatchEvent(eventList.event)
+    });
+
+    node.addEventListener("NinputOff", (e) => {
+        let aimNode = e.detail.node;
+        let index = inputValue.findIndex(item => item.node.node === aimNode);
+        if (index > -1) {
+            inputValue.splice(index, 1);
+        }
+        eventList.Nupdating();
+        node.dispatchEvent(eventList.event)
+    });
 }
 
 dMenu.addItem('相加节点', addNode);

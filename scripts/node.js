@@ -429,20 +429,37 @@ class Node {
         node.addEventListener("Ndelete", function (e) {
             e.stopPropagation();
             e.preventDefault();
+            dots.forEach(dot => {
+                if (dot.type == "output") {
+                    dot.connectingObjects.forEach(connectingObject => {
+                        let nextNode = connectingObject.dot.parentNode.parentNode;
+                        eventList.NinputOff(node);
+                        nextNode.dispatchEvent(eventList.event);
+                    });
+                }
+            });
             removeNode();
+        });
+
+        node.addEventListener("NremoveSuperior", function (e) {
+            // console.log("移除上级节点", e.detail);
+        });
+
+        node.addEventListener("NinputOff", function (e) {
+            // console.log(e.detail.node, "停止向", node, "传数据");
         });
 
         node.addEventListener("Noutput", function (e) {
             // console.log("传出数据", e.detail);
             let outputObject = e.detail.outputObject;
             let type = getType();
+            // 向目标下级发送需要的数据
             eventList.Ninput(node, null, NODE, type);
             outputObject.dispatchEvent(eventList.event);
         });
 
         node.addEventListener("Ninput", function (e) {
             // console.log("传入数据", e.detail);
-            // 将获取的添加到data中
         });
 
         node.addEventListener("NgetData", function (e) {
@@ -455,29 +472,32 @@ class Node {
 
         node.addEventListener("Nupdate", function (e) {
             // console.log("更新节点", e.detail)
-            // 向上级发送输出数据事件
-
+            // 向更新上级发送输出数据事件
             let upNode = e.detail.node;
             eventList.Noutput(node, null);
             upNode.dispatchEvent(eventList.event);
-            // 向自己添加更新中事件
-            eventList.Nupdating();
-            node.dispatchEvent(eventList.event);
+
+            if (passingLists.includes(node)) {
+                eventList.Nloop();
+                node.dispatchEvent(eventList.event);
+                return;
+            };
+            passingLists.push(node);
         });
 
         node.addEventListener("Nupdating", function (e) {
             // console.log("节点更新中", e.detail)
-            if (passingLists.includes(node)) {
-                // removeNode();
-                dots.forEach(dot => {
-                    let lastPath = dot.paths[dot.paths.length - 1];
-                    lastPath.removePath();
-                });
-                alert("您似乎创建了一个无法停止的循环\nYou seem to have created a loop that can't be stopped");
-                passingLists = [];
-                return;
-            };
-            passingLists.push(node);
+        });
+
+        node.addEventListener("Nloop", function (e) {
+            // removeNode();
+            dots.forEach(dot => {
+                if (dot.type == "output") return;
+                let lastPath = dot.paths[dot.paths.length - 1];
+                lastPath.removePath();
+            });
+            console.error("您似乎创建了一个无法停止的循环\nYou seem to have created a loop that can't be stopped");
+            passingLists = [];
         });
 
         node.addEventListener("NupdateComplete", function (e) {
@@ -487,14 +507,15 @@ class Node {
             dots.forEach(dot => {
                 if (dot.type == "output") {
                     dot.connectingObjects.forEach(connectingObject => {
-                        eventList.Nupdate(node);
                         let nextNode = connectingObject.dot.parentNode.parentNode;
                         nextNodes.push(nextNode);
+                        eventList.Nupdate(node);
                         nextNode.dispatchEvent(eventList.event);
                     });
                 }
-                if (nextNodes.length == 0) passingLists = [];
             });
+            // 移除传递列表
+            if (nextNodes.length == 0) passingLists = [];
         });
 
         node.addEventListener("error", function (e) {

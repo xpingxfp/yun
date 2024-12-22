@@ -61,16 +61,25 @@ class Path {
     }
 
     removePath() {
+        // 删除结束点的连接关系
         let index = this.dotEnd.connectingObjects.findIndex(item => item === this.dotStart);
         this.dotEnd.connectingObjects.splice(index, 1);
+        // 删除开始点的连接关系
         index = this.dotStart.connectingObjects.findIndex(item => item === this.dotEnd);
         this.dotStart.connectingObjects.splice(index, 1);
+
+        // 删除结束点中的路径集合中本路径
         index = this.dotEnd.paths.findIndex(item => item === this);
         this.dotEnd.paths.splice(index, 1);
+        // 删除开始点中的路径集合中本路径
         index = this.dotStart.paths.findIndex(item => item === this);
         this.dotStart.paths.splice(index, 1);
+
+        // 为下一个节点添加取消连接事件
         eventList.NinputOff(this.dotStart.dot.parentNode.parentNode);
         this.dotEnd.dot.parentNode.parentNode.dispatchEvent(eventList.event);
+
+        // 移除本路径
         this.remove();
     }
 

@@ -21,6 +21,15 @@ class EventList {
         this.event = new CustomEvent("Ndelete", { detail: eventDetail });
     }
 
+    // 上级节点删除时触发
+    NremoveSuperior(node) {
+        let eventDetail = {
+            eventName: "NremoveSuperior",
+            node: node
+        };
+        this.event = new CustomEvent("NremoveSuperior", { detail: eventDetail });
+    }
+
     Ninput(inputObject, content, node, type) {
         let eventDetail = {
             eventName: "Ninput",
@@ -35,7 +44,7 @@ class EventList {
     NinputOff(inputObject) {
         let eventDetail = {
             eventName: "NinputOff",
-            inputObject: inputObject
+            node: inputObject
         };
         this.event = new CustomEvent("NinputOff", { detail: eventDetail });
     }
@@ -88,6 +97,14 @@ class EventList {
 
     NinTransitEnd() {
 
+    }
+
+    // 在循环中触发，循环结束时触发
+    Nloop() {
+        let eventDetail = {
+            eventName: "Nloop"
+        };
+        this.event = new CustomEvent("Nloop", { detail: eventDetail });
     }
 
     error() {
