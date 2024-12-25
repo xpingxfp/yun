@@ -669,7 +669,7 @@ function createJSEditorNode() {
         data.type = 'text/javascript';
         data.source = obj;
 
-        textArea.value = "let " + id + " = document.getElementById('" + id + "');";
+        textArea.value = "{\n" + "let node = document.getElementById('" + id + "');" + "\n\n}";
         footerText.innerText = data.name + '(' + data.type + ')';
     });
 
