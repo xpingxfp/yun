@@ -34,6 +34,7 @@ class Node {
     dots = [];
     type = "";
     data = {};
+    id = bs.randomID();
 
     // 快速创建节点
     quicknodecreation() {
@@ -59,6 +60,8 @@ class Node {
         this.nodeBox = document.createElement("div");
         this.nodeBox.classList.add("nodeBox");
 
+        this.node.id = this.id;
+
         this.node.appendChild(this.nodeBox);
     }
 
@@ -78,6 +81,11 @@ class Node {
         this.pos.x = x;
         this.pos.y = y;
         this.node.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    quickSetPos() {
+        let menupos = getMenuPosition();
+        this.setPos(menupos.x, menupos.y);
     }
 
     // 获取节点位置
@@ -464,10 +472,15 @@ class Node {
 
         node.addEventListener("NgetData", function (e) {
             // console.log("获取数据", e.detail)
-            // 向上级发送需要的数据
-            let upNode = e.detail.node;
-            eventList.Noutput(node, data);
-            upNode.dispatchEvent(eventList.event);
+        })
+
+        node.addEventListener("NputData", function (e) {
+            // console.log("设置数据", e.detail)
+            let aimNode = e.detail.putAim;
+            let dataName = e.detail.dataName;
+            let data = NODE[dataName];
+            eventList.NgetData(dataName, data);
+            aimNode.dispatchEvent(eventList.event);
         })
 
         node.addEventListener("Nupdate", function (e) {
@@ -525,10 +538,7 @@ class Node {
     }
 }
 
-// 在节点菜单块中添加新建节点选项
-nodeMenu.addItem("新建节点", function (e) {
-    let node = new Node();
-    // 计算鼠标点击位置
+function getMenuPosition() {
     let menuBox = document.getElementById("menuBox");
     let x = menuBox.offsetLeft;
     let y = menuBox.offsetTop;
@@ -540,6 +550,19 @@ nodeMenu.addItem("新建节点", function (e) {
     let BBScale = BaseBoard.scale
     x = (x / BBScale);
     y = (y / BBScale);
+
+    return { x: x, y: y };
+}
+
+// 在节点菜单块中添加新建节点选项
+nodeMenu.addItem("新建节点", function (e) {
+    let node = new Node();
+    // 计算鼠标点击位置
+
+    let menuPos = getMenuPosition();
+
+    let x = menuPos.x;
+    let y = menuPos.y;
 
     // 新建节点并设置位置
     node.setPos(x, y);

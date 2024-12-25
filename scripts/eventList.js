@@ -66,11 +66,23 @@ class EventList {
         this.event = new CustomEvent("NoutputOff", { detail: eventDetail });
     }
 
-    NgetData() {
+    NgetData(dataName, data) {
         let eventDetail = {
-            eventName: "NgetData"
+            eventName: "NgetData",
+            dataName: dataName,
+            data: data
         };
         this.event = new CustomEvent("NgetData", { detail: eventDetail });
+    }
+
+    NputData(dataName, putAim, data) {
+        let eventDetail = {
+            eventName: "NputData",
+            dataName: dataName,
+            putAim: putAim,
+            data: data
+        };
+        this.event = new CustomEvent("NputData", { detail: eventDetail });
     }
 
     Nupdate(node) {

@@ -31,11 +31,14 @@ class Menu {
     }
 
     // 添加菜单项
-    addItem(name, command) {
+    addItem(name, command, tast = false) {
         // 菜单项结构{name: "菜单项名称", command: "执行的命令"}
         this.Menus[name] = command;
         let menuItem = document.createElement("div");
         menuItem.classList.add("menuItem");
+        if (tast) {
+            menuItem.classList.add("tast");
+        }
         // 用于查询已经添加到页面的菜单项
         menuItem.setAttribute("name", name);
 

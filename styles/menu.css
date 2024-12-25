@@ -37,6 +37,19 @@
     user-select: none;
 }
 
+.menuItem.tast {
+    color: #900;
+    height: 1.2rem;
+    overflow: hidden;
+}
+
+.menuItem.tast:hover::before {
+    content: "测试项目，不稳定";
+    display: block;
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
 .menuItem:hover {
     background-color: #555;
 }

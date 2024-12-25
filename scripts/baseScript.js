@@ -4,6 +4,9 @@
 // 导入EventList
 import { EventList } from './eventList.js';
 
+let IDlist = [];
+let IDset = new Set();
+
 // 定义BaseScript类
 class BaseScript {
 
@@ -38,6 +41,29 @@ class BaseScript {
             };
             return false;
         };
+    }
+
+    randomID() {
+        const length = 9; // 指定ID的长度
+        let id = '';
+        while (id.length < length) {
+            // 将随机数转换为36进制，并去掉小数点前的'0.'
+            id += Math.random().toString(36).slice(2);
+        }
+        // 确保最终ID的长度为指定长度
+        id = id.slice(0, length);
+
+        // 检查唯一性
+        while (IDset.has(id)) {
+            id = '';
+            while (id.length < length) {
+                id += Math.random().toString(36).slice(2);
+            }
+            id = id.slice(0, length);
+        }
+
+        IDset.add(id);
+        return id;
     }
 }
 

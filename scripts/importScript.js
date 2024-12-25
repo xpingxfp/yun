@@ -11,3 +11,5 @@ import { dtsx } from './dtsx.js';
 // import { Dialog } from './dialog.js';
 import { EventList } from './eventList.js';
 import { nodeTypes } from './baseNode.js';
+import { CustomizeNode } from './customizeNode.js';
+import { Editor } from './editor.js';

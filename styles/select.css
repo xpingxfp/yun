@@ -1,6 +1,7 @@
 .checked {
     box-shadow: 0 0 3px 1px #0048ff5f;
     border: 1px solid #0048ff5f;
+    z-index: 1000;
 }
 
 #selectBox {
