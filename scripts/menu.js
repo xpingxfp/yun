@@ -3,6 +3,10 @@
 
 // 导入基础脚本，用于添加样式
 import { BaseScript } from './baseScript.js';
+import { EventList } from './eventList.js';
+
+let eventList = new EventList();
+
 
 // 添加样式
 let bs = new BaseScript();
@@ -43,7 +47,7 @@ class Menu {
         menuItem.setAttribute("name", name);
 
         menuItem.innerHTML = name;
-        menuItem.onmousedown = command
+        menuItem.onclick = command
         this.menu.appendChild(menuItem);
     }
 
@@ -145,5 +149,17 @@ class Menu {
 let menuBox = document.createElement("div");
 menuBox.id = "menuBox";
 document.body.appendChild(menuBox);
+
+let menu = new Menu("菜单");
+
+menu.addItem("删除选中", () => {
+    let checked = document.querySelectorAll('.checked');
+    for (let i = 0; i < checked.length; i++) {
+        eventList.Ndelete();
+        checked[i].dispatchEvent(eventList.event);
+    }
+});
+
+menu.show();
 
 export { Menu }

@@ -4,14 +4,12 @@ class EventList {
         this.event = null;
     }
 
-    NconnectionSuccess(dot, connectingObject) {
+    NconnectionSuccess(connectingObject) {
         let eventDetail = {
-            dot: dot,
             connectingObject: connectingObject,
             eventName: "NconnectionSuccess"
         };
         this.event = new CustomEvent("NconnectionSuccess", { detail: eventDetail });
-
     }
 
     Ndelete() {

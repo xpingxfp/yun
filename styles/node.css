@@ -33,7 +33,7 @@
 
 .nodeBox>.content {
     height: calc(100% - 20px);
-    overflow: auto;
+    overflow: hidden;
     overflow-wrap: break-word;
 }
 

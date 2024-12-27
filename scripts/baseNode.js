@@ -15,31 +15,51 @@ bs.addStyle("./styles/baseNode.css");
 
 let nodeTypes = {
     'number': {
+        'number': '数字',
         'int': '整数',
         'float': '浮点数',
         'num': '数字',
     },
-    'string': {
-        'str': '字符串',
+    'text': {
+        'string': '文本',
+        'txt': '文本',
         'text': '文本',
+        'json': 'JSON',
+        'xml': 'XML',
+        'html': 'HTML',
+        'css': 'CSS',
+        'javascript': 'JavaScript',
+        'url': 'URL',
     },
-    'boolean': {
-        'bool': '布尔值',
+    'image': {
+        'image': '图片',
+        'jpg': 'JPG图片',
+        'png': 'PNG图片',
+        'gif': 'GIF图片',
+        'webp': 'WebP图片',
+        'psd': 'PSD图片',
+        'ai': 'AI图片',
+        'eps': 'EPS图片',
+        'pdf': 'PDF图片',
     },
-    'array': {
-        'arr': '数组',
+    'video': {
+        'video': '视频',
+        'mp4': 'MP4视频',
+        'mov': 'MOV视频',
+        'avi': 'AVI视频',
+        'mkv': 'MKV视频',
+        'wmv': 'WMV视频',
+        'flv': 'FLV视频',
+        'webm': 'WebM视频',
     },
-    'object': {
-        'obj': '对象',
-    },
-    'function': {
-        'func': '函数',
-    },
-    'null': {
-        'null': '空',
-    },
-    'undefined': {
-        'undefined': '未定义',
+    'audio': {
+        'audio': '音频',
+        'mp3': 'MP3音频',
+        'wav': 'WAV音频',
+        'ogg': 'OGG音频',
+        'flac': 'FLAC音频',
+        'aac': 'AAC音频',
+        'amr': 'AMR音频',
     },
 }
 
@@ -69,6 +89,14 @@ function createNode() {
     node.addToNodes();
     return node;
 }
+
+// 空白节点
+function blankNode() {
+    let node = createNode();
+    node.setHeader('空白节点');
+}
+
+dMenu.addItem('空白节点', blankNode);
 
 function intNode() {
     let node = createNode();
@@ -109,7 +137,7 @@ function intNode() {
 
 }
 
-dMenu.addItem('整数', intNode);
+// dMenu.addItem('整数', intNode);
 
 function numbertNode() {
     let node = createNode();
@@ -150,6 +178,206 @@ function numbertNode() {
 }
 
 dMenu.addItem('数字', numbertNode);
+
+function textNode() {
+    let node = createNode();
+    node.setType('string');
+    node.addClass('NT_string');
+    node.setHeader('文本');
+    let textarea = document.createElement('textarea');
+    textarea.classList.add('NC_textarea');
+    node.content.appendChild(textarea);
+    node.setSize(100, 50);
+    node.data = { value: '' };
+
+    textarea.addEventListener('change', function () {
+        let value = textarea.value;
+        node.data.value = value;
+        eventList.NupdateComplete();
+        node.node.dispatchEvent(eventList.event)
+    });
+
+    node.node.addEventListener('Ninput', (e) => {
+        let inType = e.detail.type;
+        if (inType == 'string') {
+            let value = e.detail.node.data.value;
+            node.data.value = value;
+        }
+        eventList.Nupdating();
+        node.node.dispatchEvent(eventList.event)
+    });
+
+    node.node.addEventListener('Nupdating', (e) => {
+        textarea.value = node.data.value;
+        eventList.NupdateComplete();
+        node.node.dispatchEvent(eventList.event)
+    });
+
+}
+
+dMenu.addItem('文本', textNode);
+
+function imageNode() {
+    let node = createNode();
+    node.setType('image');
+    node.addClass('NT_image');
+    node.setHeader('图片');
+    let img = document.createElement('img');
+    img.classList.add('NC_image');
+    node.content.appendChild(img);
+    node.data = { value: '' };
+
+    let openImage = function () {
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = function () {
+            let file = input.files[0];
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                img.src = e.target.result;
+                node.data.value = e.target.result;
+                eventList.NupdateComplete();
+                node.node.dispatchEvent(eventList.event)
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    };
+
+    let menuBtn = document.createElement('div');
+    menuBtn.classList.add('NC_menuBtn');
+    menuBtn.innerHTML = '选择图片';
+    menuBtn.addEventListener('click', openImage);
+    node.header.appendChild(menuBtn);
+
+    node.node.addEventListener('Ninput', (e) => {
+        let inType = e.detail.type;
+        if (inType == 'image') {
+            let value = e.detail.node.data.value;
+            img.src = value;
+        }
+        eventList.Nupdating();
+        node.node.dispatchEvent(eventList.event)
+    });
+
+    node.node.addEventListener('Nupdating', (e) => {
+        eventList.NupdateComplete();
+        node.node.dispatchEvent(eventList.event)
+    });
+
+}
+
+dMenu.addItem('图片', imageNode);
+
+function videoNode() {
+    let node = createNode();
+    node.setType('video');
+    node.addClass('NT_video');
+    node.setHeader('视频');
+    let video = document.createElement('video');
+    video.controls = true;
+    video.classList.add('NC_video');
+    node.content.appendChild(video);
+    node.data = { value: '' };
+
+    let openVideo = function () {
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'video/*';
+        input.onchange = function () {
+            let file = input.files[0];
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                video.src = e.target.result;
+                node.data.value = e.target.result;
+                eventList.NupdateComplete();
+                node.node.dispatchEvent(eventList.event)
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    };
+
+    let menuBtn = document.createElement('div');
+    menuBtn.classList.add('NC_menuBtn');
+    menuBtn.innerHTML = '选择视频';
+    menuBtn.addEventListener('click', openVideo);
+    node.header.appendChild(menuBtn);
+
+    node.node.addEventListener('Ninput', (e) => {
+        let inType = e.detail.type;
+        if (inType == 'video') {
+            let value = e.detail.node.data.value;
+            video.src = value;
+        }
+        eventList.Nupdating();
+        node.node.dispatchEvent(eventList.event)
+    });
+
+    node.node.addEventListener('Nupdating', (e) => {
+        eventList.NupdateComplete();
+        node.node.dispatchEvent(eventList.event)
+    });
+
+}
+
+dMenu.addItem('视频', videoNode);
+
+function audioNode() {
+    let node = createNode();
+    node.setType('audio');
+    node.addClass('NT_audio');
+    node.setHeader('音频');
+    let audio = document.createElement('audio');
+    audio.controls = true;
+    audio.classList.add('NC_audio');
+    node.content.appendChild(audio);
+    node.data = { value: '' };
+
+    let openAudio = function () {
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'audio/*';
+        input.onchange = function () {
+            let file = input.files[0];
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                audio.src = e.target.result;
+                node.data.value = e.target.result;
+                eventList.NupdateComplete();
+                node.node.dispatchEvent(eventList.event)
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    };
+
+    let menuBtn = document.createElement('div');
+    menuBtn.classList.add('NC_menuBtn');
+    menuBtn.innerHTML = '选择音频';
+    menuBtn.addEventListener('click', openAudio);
+    node.header.appendChild(menuBtn);
+
+    node.node.addEventListener('Ninput', (e) => {
+        let inType = e.detail.type;
+        if (inType == 'audio') {
+            let value = e.detail.node.data.value;
+            audio.src = value;
+        }
+        eventList.Nupdating();
+        node.node.dispatchEvent(eventList.event)
+    });
+
+    node.node.addEventListener('Nupdating', (e) => {
+        eventList.NupdateComplete();
+        node.node.dispatchEvent(eventList.event)
+    });
+
+}
+
+dMenu.addItem('音频', audioNode);
+
 
 dMenu.show();
 

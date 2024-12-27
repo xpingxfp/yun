@@ -4,7 +4,6 @@
 import { BaseScript } from './baseScript.js';
 import { Menu } from "./menu.js";
 import { BaseBoard } from './baseBoard.js'
-import { Path } from './path.js';
 import { Dot } from './dot.js';
 import { EventList } from './eventList.js';
 
@@ -33,7 +32,7 @@ class Node {
     content = null;
     dots = [];
     type = "";
-    data = {};
+    data = { name: "", value: "" };
     id = bs.randomID();
 
     // 快速创建节点
@@ -136,16 +135,20 @@ class Node {
         this.header = document.createElement("div");
         this.header.classList.add("header");
         this.header.innerText = "节点";
+        this.data.name = "节点";
         this.nodeBox.appendChild(this.header);
     }
 
     // 设置节点头部内容
     setHeader(text) {
         this.header.innerText = text;
+        this.data.name = text;
     }
 
     // 节点头部双击修改标题
     changingTheTitle() {
+        let getData = this.getData.bind(this);
+        let setData = this.setHeader.bind(this);
         this.header.addEventListener("dblclick", function (e) {
             e.stopPropagation();
             e.preventDefault();
@@ -156,6 +159,9 @@ class Node {
             input.focus();
             input.addEventListener("blur", function () {
                 this.parentNode.innerText = this.value;
+                let data = getData();
+                data.name = this.value;
+                setData(data.name);
             });
             input.addEventListener("keydown", function (e) {
                 if (e.keyCode == 13) {
@@ -169,9 +175,6 @@ class Node {
     addContent() {
         this.content = document.createElement("div");
         this.content.classList.add("content");
-        let div = document.createElement("div");
-        div.innerHTML = ""
-        this.content.appendChild(div);
         this.nodeBox.appendChild(this.content);
 
         // this.#addContentEditable();
@@ -302,7 +305,8 @@ class Node {
             node.classList.toggle("checked");
         }
         node.addEventListener("mousedown", checkNode);
-        document.addEventListener("mousedown", function (e) {
+        let baseboard = document.getElementById("baseboard");
+        baseboard.addEventListener("mousedown", function (e) {
             if (e.button != 0) return;
             if (e.ctrlKey) return;
             let checkeds = document.querySelectorAll(".checked");
@@ -335,6 +339,11 @@ class Node {
     // 将节点添加到节点数组中
     addToNodes() {
         nodes.push(this);
+    }
+
+    // 获取nodes
+    getNodes() {
+        return nodes;
     }
 
     // 从节点数组中移除节点
@@ -449,6 +458,10 @@ class Node {
             removeNode();
         });
 
+        node.addEventListener("NconnectionSuccess", function (e) {
+            // console.log("连接成功", node, e.detail.connectingObject);
+        });
+
         node.addEventListener("NremoveSuperior", function (e) {
             // console.log("移除上级节点", e.detail);
         });
@@ -555,22 +568,22 @@ function getMenuPosition() {
 }
 
 // 在节点菜单块中添加新建节点选项
-nodeMenu.addItem("新建节点", function (e) {
-    let node = new Node();
-    // 计算鼠标点击位置
+// nodeMenu.addItem("新建节点", function (e) {
+//     let node = new Node();
+//     // 计算鼠标点击位置
 
-    let menuPos = getMenuPosition();
+//     let menuPos = getMenuPosition();
 
-    let x = menuPos.x;
-    let y = menuPos.y;
+//     let x = menuPos.x;
+//     let y = menuPos.y;
 
-    // 新建节点并设置位置
-    node.setPos(x, y);
-    node.quicknodecreation();
-    node.addInputDot();
-    node.addOutputDot();
-    node.addToNodes();
-});
+//     // 新建节点并设置位置
+//     node.setPos(x, y);
+//     node.quicknodecreation();
+//     node.addInputDot();
+//     node.addOutputDot();
+//     node.addToNodes();
+// });
 
 // 在节点菜单块中添加打印节点信息选项
 nodeMenu.addItem("打印所有节点信息", function () {

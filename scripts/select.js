@@ -7,19 +7,6 @@ import { BaseScript } from './baseScript.js';
 let bs = new BaseScript();
 bs.addStyle("./styles/select.css");
 
-// let nodes = document.querySelectorAll(".node");
-// for (let i = 0; i < nodes.length; i++) {
-//     let node = nodes[i];
-//     node.addEventListener("click", function () {
-//         let selected = document.querySelector(".checked");
-//         if (selected) {
-//             selected.classList.remove("checked");
-//         }
-//         node.classList.add("checked");
-//     });
-// }
-
-
 let selectBox;
 let appendTimeout;
 

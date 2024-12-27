@@ -45,7 +45,7 @@ function styleNode() {
 
 CMenu.addItem("样式节点", styleNode);
 
-CMenu.show();
+// CMenu.show();
 
 
 class CustomizeNode { }

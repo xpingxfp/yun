@@ -254,7 +254,7 @@ function showEditor() {
     editor.classList.remove('hide');
 }
 
-editorMenu.addItem('显示编辑器', showEditor);
+// editorMenu.addItem('显示编辑器', showEditor);
 
 function createEditorNode() {
     let node = new Node();
@@ -363,7 +363,7 @@ function createEditorNode() {
     node.nodeBox.appendChild(footer)
 }
 
-editorMenu.addItem('创建编辑器节点', createEditorNode);
+// editorMenu.addItem('创建编辑器节点', createEditorNode);
 
 function simpleFormatHTML(html) {
     // 初始化变量

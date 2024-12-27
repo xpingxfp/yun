@@ -256,6 +256,11 @@ class Dot {
                 event.Noutput(inputDot.dot.parentNode.parentNode)
                 outputDot.dot.parentNode.parentNode.dispatchEvent(event.event);
 
+                event.NconnectionSuccess(inputDot.dot.parentNode.parentNode);
+                outputDot.dot.parentNode.parentNode.dispatchEvent(event.event);
+                event.NconnectionSuccess(outputDot.dot.parentNode.parentNode);
+                inputDot.dot.parentNode.parentNode.dispatchEvent(event.event);
+
                 connectingObject = tempDot;
             };
             let startPos = { x: tempDot.getPos().x, y: tempDot.getPos().y };

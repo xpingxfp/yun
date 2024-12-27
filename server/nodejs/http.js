@@ -2,6 +2,8 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
+const port = 80;
+
 // 定义支持的MIME类型
 const mimes = {
     html: 'text/html',
@@ -72,6 +74,6 @@ const server = http.createServer((request, response) => {
 });
 
 // 监听3000端口
-server.listen(3000, () => {
-    console.log('Server is running at http://localhost:3000/'); // 服务器启动提示
+server.listen(port, () => {
+    console.log('Server is running at http://localhost/'); // 服务器启动提示
 });

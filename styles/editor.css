@@ -169,7 +169,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 #editor .full:hover {
     background-color: #66afe9;
     color: #888;
-    transform: rotate(-45deg) scale(1.3);
+    transform: rotate(-225deg) scale(1.3);
     transition: 0.3s ease;
 }
 

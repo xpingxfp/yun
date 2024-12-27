@@ -8,14 +8,14 @@ import { EventList } from './eventList.js';
 
 let eventList = new EventList();
 
-let dMenu = new Menu('动态实现');
+let dMenu = new Menu('逻辑');
 
 let bs = new BaseScript();
-bs.addStyle("./styles/dtsx.css");
+bs.addStyle("./styles/logic.css");
 
 
 
-class dtsx { };
+class Logic { };
 
 function getMenuPos() {
     let menuBox = document.getElementById("menuBox");
@@ -248,4 +248,4 @@ function simpleFormatHTML(html) {
 }
 
 
-export { dtsx };
+export { Logic };
