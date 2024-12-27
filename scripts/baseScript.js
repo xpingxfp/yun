@@ -87,10 +87,10 @@ function removeChecked() {
 }
 
 // 检测当用户按下x的时候删除元素
-document.onkeydown = function (event) {
-    if (event.key.toLowerCase() === 'x') {
-        removeChecked();
-    }
-}
+// document.onkeydown = function (event) {
+//     if (event.key.toLowerCase() === 'x') {
+//         removeChecked();
+//     }
+// }
 
 export { BaseScript };

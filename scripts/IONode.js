@@ -3,7 +3,6 @@
 import { BaseScript } from './baseScript.js';
 import { Menu } from "./menu.js";
 import { Node } from "./node.js";
-import { BaseBoard } from './baseBoard.js';
 import { EventList } from './eventList.js';
 
 import { typelist } from './TO/typelist.js';
