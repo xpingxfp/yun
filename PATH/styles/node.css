@@ -1,0 +1,219 @@
+.node {
+    border-radius: 5px;
+    background-color: #333;
+    box-shadow: 0 0 5px #000;
+    border: none;
+    color: #fff;
+    padding: 0;
+}
+
+.node.checked {
+    box-shadow: 0 0 5px rgb(0, 4, 255);
+}
+
+.node .nodeBox {
+    border-radius: 5px;
+    background-color: #333;
+    box-shadow: 0 0 5px #000;
+    border: none;
+    color: #fff;
+}
+
+.node .nodeBox .header {
+    padding: 0 8px;
+    font-size: 16px;
+    border: none;
+    overflow: hidden;
+}
+
+.node .nodeBox .header:hover {
+    background-color: #555;
+}
+
+.node .nodeBox .content {
+    font-size: 14px;
+    border: none;
+    box-shadow: inset 0 0 1px #000;
+    overflow: hidden;
+}
+
+.node .nodeBox .resizerBottomRight {
+    border-radius: 50%;
+    background-color: transparent;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+}
+
+.node .nodeBox .resizerBottomRight:hover {
+    background-color: #fff;
+}
+
+.node .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #fff;
+    position: absolute;
+    border: none;
+}
+
+.node .dot.input {
+    background-color: #000;
+}
+
+.node .dot.output {
+    background-color: #00f;
+}
+
+.node .nodeBox button {
+    background-color: #333;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 5px;
+    padding: 0px 4px;
+}
+
+.node .nodeBox button:hover {
+    background-color: #555;
+}
+
+.node .nodeBox input {
+    background-color: #333;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+}
+
+.node .nodeBox textarea {
+    background-color: #333;
+    color: #fff;
+    width: 100%;
+    height: 100%;
+}
+
+.node .nodeBox select {
+    background-color: #333;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+.node .nodeBox select:hover {
+    background-color: #555;
+}
+
+
+/*  */
+
+#menuBox {
+    background-color: #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #000;
+    border: none;
+    width: 150px;
+}
+
+#menuBox>div {
+    font-size: 14px;
+    border: none;
+}
+
+#menuBox>div .menuTitle {
+    text-align: center;
+    border: none;
+    /* box-shadow: 0 0 5px #000; */
+}
+
+#menuBox>div .menuItem {
+    padding: 8px;
+    border: none;
+    background-color: #fff;
+    box-shadow: 0 0 5px #000;
+    line-height: 24px;
+}
+
+#menuBox>div .menuItem:hover {
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px #000;
+}
+
+#menuBox>div .menuItem.tast {
+    color: #999;
+}
+
+/*  */
+
+.editor-node textarea {
+    color: #fff;
+}
+
+.editor-menu span {
+    color: #fff;
+    font-size: 14px;
+}
+
+.editor-menu span:hover {
+    color: #000;
+    background-color: #555;
+    border-radius: 5px;
+    padding: 0px 4px;
+}
+
+/*  */
+
+.IONode-importNode-url {
+    background-color: #333;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 5px;
+    padding: 0px 4px;
+    margin-right: 10px;
+    height: 30px;
+}
+
+.IONode-importNode-url:focus {
+    outline: none;
+}
+
+.IONode-importNode-url:hover {
+    background-color: #555;
+}
+
+.IONode-importNode-typeSelect {
+    display: flex;
+}
+
+.IONode-importNode-typeSelect select {
+    background-color: #333;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 5px;
+    padding: 0px 4px;
+    margin-right: 10px;
+    width: 80%;
+    /* box-shadow: 0 0 5px #000; */
+}
+
+.IONode-importNode-typeSelect select:hover {
+    background-color: #555;
+}
+
+.IONode-importNode-typeSelect button {
+    background-color: #333;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 5px;
+    padding: 0px 4px;
+    position: absolute;
+    right: 0;
+}
+
+.IONode-importNode-typeSelect button:hover {
+    background-color: #555;
+}
