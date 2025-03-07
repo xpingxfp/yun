@@ -1,4 +1,4 @@
-const isOnline = true;
+let isOnline = true;
 if (!navigator.onLine) {
     isOnline = false;
 }
