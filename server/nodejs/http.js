@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const port = 80;
+const port = 2424;
 
 // 定义支持的MIME类型
 const mimes = {
@@ -27,10 +27,10 @@ const server = http.createServer((request, response) => {
         return;
     }
     let pathname = request.url; // 获取请求的路径
-    console.log('Request for' + pathname);
+    // console.log('Request for ' + pathname);
     let root = path.join(__dirname, '../../'); // 设置根目录
     let filePath = root + pathname; // 拼接文件路径
-    console.log('Request for' + filePath);
+    console.log('Request for ' + filePath);
     if (pathname === '/') {
         filePath = root + 'index.html'; // 默认请求index.html
     }
@@ -73,7 +73,7 @@ const server = http.createServer((request, response) => {
     });
 });
 
-// 监听3000端口
+// 监听2424端口
 server.listen(port, () => {
-    console.log('Server is running at http://localhost/'); // 服务器启动提示
+    console.log('Server is running at http://localhost/2424'); // 服务器启动提示
 });

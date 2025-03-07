@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试</title>
+</head>
+
+<body>
+    <script>
+        const MIME_STORE_NAME = 'mimeTypes';
+
+        function openMimeDb() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('mimeDB', 1);
+
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    db.createObjectStore(MIME_STORE_NAME, { keyPath: 'ext' });
+                };
+
+                request.onsuccess = (event) => {
+                    resolve(event.target.result);
+                };
+
+                request.onerror = (event) => {
+                    reject(new Error(`Database error: ${event.target.errorCode}`));
+                };
+            });
+        }
+
+        // 有效的顶级 MIME 类型和子类型部分的正则表达式
+        let MIME_TYPE_REGEX = /^(application|audio|example|image|message|model|multipart|text|video)\/[a-zA-Z0-9\-\+\.]+$/;
+
+        // 初始化或更新 MIME 类型映射
+        async function initializeMimeTypes(types) {
+            // 验证传入的 MIME 类型映射
+            for (const [ext, type] of Object.entries(types)) {
+                if (!isValidMimeType(type)) {
+                    console.error(`无效的 MIME 类型: ${type} 对于扩展名: ${ext}`);
+                    continue; // 跳过无效的条目
+                }
+            }
+
+            const db = await openMimeDb();
+            const transaction = db.transaction([MIME_STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(MIME_STORE_NAME);
+
+            for (const [ext, type] of Object.entries(types)) {
+                if (isValidMimeType(type)) {
+                    store.put({ ext, type });
+                }
+            }
+        }
+
+        function isValidMimeType(mimeType) {
+            return MIME_TYPE_REGEX.test(mimeType);
+        }
+
+        initializeMimeTypes({
+            html: 'text/html',
+            css: 'text/css',
+            js: 'application/javascript',
+            json: 'application/json',
+            png: 'image/png',
+            jpg: 'image/jpeg',
+            jpeg: 'image/jpeg'
+        });
+
+        async function getContentTypeFromDB(ext) {
+            const db = await openMimeDb();
+            const transaction = db.transaction([MIME_STORE_NAME], 'readonly');
+            const store = transaction.objectStore(MIME_STORE_NAME);
+
+            const request = store.get(ext);
+
+            return new Promise((resolve, reject) => {
+                request.onsuccess = () => {
+                    resolve(request.result || 'application/octet-stream');
+                };
+                request.onerror = () => {
+                    reject(new Error('Failed to retrieve MIME type'));
+                };
+            });
+        }
+
+        let mineInput = document.createElement('input');
+        document.body.appendChild(mineInput);
+        let mineInputBtn = document.createElement('button');
+        mineInputBtn.innerHTML = "获取";
+        document.body.appendChild(mineInputBtn);
+        mineInputBtn.onclick = async () => {
+            let ext = mineInput.value;
+            let mimeType = await getContentTypeFromDB(ext);
+            console.log(mimeType);
+        }
+        let mineInputBtn2 = document.createElement('button');
+        mineInputBtn2.innerHTML = "添加";
+        document.body.appendChild(mineInputBtn2);
+        mineInputBtn2.onclick = () => {
+            let types = mineInput.value;
+            console.log(JSON.parse(types));
+
+            initializeMimeTypes(JSON.parse(types));
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>各文件解释</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <a href="./index.html">返回首页</a><br><br>
+    <span>node类设计思路</span>
+    <div id="nodeClass" class="box">
+        <span class="classname">Node/节点</span>
+        <div class="box">
+            <span>事件经过</span>
+            <div class="box">
+                <span>更新事件</span>
+                <p>被传入Nupdata事件， 自动进入Nupdating事件，根据节点类型自己更新，自己更新完毕后向自己传递NupdateComplete事件，后向下级节点传送Nupdate事件</p>
+                <img src="./imgs/nodeUpdateEvente.png" alt="" height="300px">
+            </div>
+            <div class="box">
+                <span>连接事件</span>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
