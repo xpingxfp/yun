@@ -1,18 +1,20 @@
-import { Yun, page, element, menuInstance, eventList, pathBox, Dot, Path } from "../main/index.js";
+import { Yun, page, element, menuInstance, eventList } from "../main/index.js";
 
 class TemplateYun extends Yun {
     constructor() {
         super();
-        this.box = null;
-        this.header = element.create.header();
-        this.contentBox = null;
+        this.structure = {
+            box: null,
+            header: element.create.header(),
+            content: null,
+        };
         this.init();
     }
 
     init() {
         this.createYun();
         this.createBox();
-        this.box.appendChild(this.header);
+        this.structure.box.appendChild(this.structure.header);
         this.createContentBox();
         this.drag();
         this.event();
@@ -22,19 +24,19 @@ class TemplateYun extends Yun {
     }
 
     createBox() {
-        this.box = document.createElement('div');
-        this.box.classList.add('box');
-        this.body.appendChild(this.box);
+        this.structure.box = document.createElement('div');
+        this.structure.box.classList.add('box');
+        this.body.appendChild(this.structure.box);
     }
 
     createContentBox() {
-        this.contentBox = document.createElement('div');
-        this.contentBox.classList.add('content');
-        this.box.appendChild(this.contentBox);
+        this.structure.content = document.createElement('div');
+        this.structure.content.classList.add('content');
+        this.structure.box.appendChild(this.structure.content);
     }
 
     drag() {
-        this.header.addEventListener('mousedown', () => {
+        this.structure.header.addEventListener('mousedown', () => {
             let destroyDraggable = element.func.yun.draggable(this);
             document.addEventListener('mouseup', destroyDraggable)
         })
@@ -42,8 +44,12 @@ class TemplateYun extends Yun {
 
     event() {
         let yun = this;
-        element.func.HTMLelement.edit.dblclickEdit(this.header.data.title, (newValue) => {
-            console.log('新的值是:', newValue);
+        element.func.HTMLelement.edit.dblclickEdit(this.structure.header.data.title, (e) => {
+            if (e.state == "editing") {
+                yun.state = 'changeTitle';
+            } else if (e.state == "edited") {
+                yun.state = 'free';
+            }
         });
     }
 }
@@ -69,6 +75,7 @@ let menuD = {
         let yunBox = page.yunBox;
         let [x, y] = page.feature.coordinateTransformation(e.clientX, e.clientY);
         yun.setPosition(x, y);
+        yun.structure.content.setAttribute("contenteditable", "plaintext-only");
         yunBox.appendChild(yun.body);
         yuns.push(yun);
     }

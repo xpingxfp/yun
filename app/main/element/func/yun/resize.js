@@ -1,3 +1,4 @@
+import { page } from "../../../index.js";
 function createResizer(yun, options) {
     const resizer = document.createElement("div");
     resizer.classList.add("resize", ...options.classes);
@@ -14,7 +15,10 @@ function createResizer(yun, options) {
         const startSize = { w: yun.data.size.width, h: yun.data.size.height };
 
         resizeListener = (e) => {
-            const offset = { x: e.clientX - startPos.x, y: e.clientY - startPos.y };
+            const offset = {
+                x: (e.clientX - startPos.x) / page.data.scale,
+                y: (e.clientY - startPos.y) / page.data.scale
+            };
             const newWidth = startSize.w + (options.resizeX ? offset.x : 0);
             const newHeight = startSize.h + (options.resizeY ? offset.y : 0);
             yun.setSize(newWidth, newHeight);

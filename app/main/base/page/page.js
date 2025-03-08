@@ -61,8 +61,9 @@ baseBoard.addEventListener('mousedown', e => {
 // 缩放逻辑
 baseBoard.addEventListener('wheel', e => {
     if (page.state != 'free') return;
-    e.preventDefault();
     if (e.ctrlKey) return;
+    if (e.target.closest('.yun')) return;
+    e.preventDefault();
 
     // 调整缩放方向判断
     const zoomDirection = Math.sign(e.deltaY) > 0 ? -1 : 1;
