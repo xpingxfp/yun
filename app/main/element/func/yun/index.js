@@ -1,8 +1,10 @@
-import { draggableYun } from "./dargYun.js";
-import { resizeYun } from "./resizeYun.js";
-import { zoomYun } from "./zoomYun.js";
+import { draggable } from "./darg.js";
+import { resize } from "./resize.js";
+import { zoom } from "./zoom.js";
+import { connect } from "./connect.js";
 export let yun = {
-    draggableYun,
-    resizeYun,
-    zoomYun
+    draggable,
+    resize,
+    zoom,
+    connect
 }

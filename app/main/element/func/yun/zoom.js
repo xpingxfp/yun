@@ -3,7 +3,7 @@
  * @param {Yun} yun
  * @returns {function} destroy
  */
-export function zoomYun(yun) {
+export function zoom(yun) {
     function wheelHandler(e) {
         if (!e.ctrlKey) return;
         e.preventDefault();

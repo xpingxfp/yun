@@ -21,7 +21,7 @@ export let yunBox = document.createElement('div');
 yunBox.id = 'yunBox';
 scaleB.appendChild(yunBox);
 
-let svgBox = document.createElement('div');
+export let svgBox = document.createElement('div');
 svgBox.bounds = { left: 0, top: 0, right: 1000, bottom: 1000 };
 svgBox.id = 'svgBox';
 yunBox.appendChild(svgBox);

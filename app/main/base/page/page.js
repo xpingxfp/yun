@@ -1,5 +1,10 @@
 import { baseBoard, yunBox, posB, scaleB } from "./index.js";
 
+function coordinateTransformation(x, y) {
+    return [(x - page.data.pos.x) / page.data.scale,
+    (y - page.data.pos.y) / page.data.scale];
+}
+
 export let page = {
     data: { pos: { x: 0, y: 0 }, scale: 1 },
     baseBoard: baseBoard,
@@ -7,7 +12,8 @@ export let page = {
     state: "free",
     feature: {
         setPosition,
-        setScale
+        setScale,
+        coordinateTransformation
     }
 }
 

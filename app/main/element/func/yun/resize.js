@@ -53,7 +53,7 @@ function createResizer(yun, options) {
  * @param {Yun} yun
  * @returns {function} destroy
  */
-export function resizeYun(yun) {
+export function resize(yun) {
     const resizers = [
         { classes: ["corner", "bottom", "right"], resizeX: true, resizeY: true },
         { classes: ["horizontal", "bottom"], resizeX: false, resizeY: true },

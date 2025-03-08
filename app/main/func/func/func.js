@@ -59,7 +59,7 @@ export class FuncItem {
         this.element = document.createElement('div'); // 创建一个 div 元素
         this.element.classList.add('item'); // 添加 'item' 样式类
         this.element.textContent = this.name; // 设置元素文本内容为项目名称
-        this.element.onclick = () => this.command(); // 设置点击事件，调用命令函数
+        this.element.onclick = (e) => this.command(e); // 设置点击事件，调用命令函数
     }
 }
 

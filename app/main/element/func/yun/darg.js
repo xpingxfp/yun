@@ -5,6 +5,7 @@ function updateGhostSizeAndPosition(width, height, x, y) {
     ghostElement.style.height = `${height}px`;
     ghostElement.style.transform = `translate(${x}px, ${y}px) scale(${page.data.scale})`;
 }
+
 let autoScrollTimer;
 
 function startAutoScroll() {
@@ -39,9 +40,9 @@ function startAutoScroll() {
  * @param {Yun} yun
  * @returns {function} destroy
  */
-export function draggableYun(yun) {
+export function draggable(yun) {
     function mouseDownHandler(e) {
-        if (e.button !== 0) return; // 只响应左键点击
+        if (e.button !== 0) return;
         if (yun.state != 'free') return;
 
         let initialPos = {

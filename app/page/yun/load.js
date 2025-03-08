@@ -63,6 +63,6 @@ function addCSSToDoc(url) {
 }
 
 addJSToDoc('../../path/yuns/allData/allData.js');
-addJSToDoc('../../test/index.js');
+addJSToDoc('../../dome/index.js');
 
 
