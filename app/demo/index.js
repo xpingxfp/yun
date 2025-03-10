@@ -102,12 +102,14 @@ function numberYun() {
     yun.data.type = "number";
     yun.data.value = 0;
 
+    // Yinput事件，建议用于处理数据
     yun.body.addEventListener('Yinput', (e) => {
         let type = e.detail.data.type;
         let value = e.detail.data.value;
         yun.body.classList.remove('error');
         if (type == "number") {
             yun.data.value = value;
+            // 处理完成向自己传递更新中事件
             let event = eventList.Yupdataing();
             yun.body.dispatchEvent(event);
         } else {
@@ -115,8 +117,10 @@ function numberYun() {
         }
     })
 
+    // Yupdataing事件，建议用于应用变化
     yun.body.addEventListener("Yupdataing", () => {
         yun.structure.textarea.value = yun.data.value;
+        // 修改完成向自己传递更新完毕事件
         let event = eventList.YupdateComplete();
         yun.body.dispatchEvent(event);
     })
@@ -132,6 +136,7 @@ function numberYun() {
         if (isNumUsingNumber) {
             yun.body.classList.remove('error');
             yun.data.value = num;
+            // 修改完成向自己传递更新完毕事件
             let event = eventList.YupdateComplete();
             yun.body.dispatchEvent(event);
         } else {
