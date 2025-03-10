@@ -1,11 +1,15 @@
 import { Yun, page, element, menuInstance, eventList } from "../main/index.js";
 
+// 已经在"path/yuns/TemplateYun/"中添加"
 class TemplateYun extends Yun {
     constructor() {
         super();
         this.structure = {
+            /** @type {HTMLDivElement} */
             box: null,
+            /** @type {HTMLDivElement} */
             header: element.create.header(),
+            /** @type {HTMLDivElement} */
             content: null,
         };
         this.init();
@@ -83,3 +87,66 @@ let menuD = {
 
 let funcD = menuInstance.setFunc(menuD, "测试");
 menuInstance.bindingFuncTarget(funcD);
+
+function createYun() {
+    let yun = new TemplateYun();
+    let yunBox = page.yunBox;
+    yunBox.appendChild(yun.body);
+    return yun;
+}
+
+// 已经在"path/yuns/dataType/"中添加"
+function numberYun() {
+    let yun = createYun();
+    yun.structure.header.data.title.innerHTML = "数值";
+    yun.data.type = "number";
+    yun.data.value = 0;
+
+    yun.body.addEventListener('Yinput', (e) => {
+        let type = e.detail.data.type;
+        let value = e.detail.data.value;
+        yun.body.classList.remove('error');
+        if (type == "number") {
+            yun.data.value = value;
+            let event = eventList.Yupdataing();
+            yun.body.dispatchEvent(event);
+        } else {
+            yun.body.classList.add('error');
+        }
+    })
+
+    yun.body.addEventListener("Yupdataing", () => {
+        yun.structure.textarea.value = yun.data.value;
+        let event = eventList.YupdateComplete();
+        yun.body.dispatchEvent(event);
+    })
+
+    let textarea = document.createElement('textarea');
+    yun.structure.textarea = textarea;
+    yun.structure.content.appendChild(textarea);
+
+    textarea.addEventListener('change', () => {
+        let value = textarea.value.trim();
+        let num = Number(value);
+        let isNumUsingNumber = !isNaN(num) && value !== '';
+        if (isNumUsingNumber) {
+            yun.body.classList.remove('error');
+            yun.data.value = num;
+            let event = eventList.YupdateComplete();
+            yun.body.dispatchEvent(event);
+        } else {
+            yun.body.classList.add('error');
+        }
+
+    });
+    return yun;
+}
+
+let dataType = {
+    "数值": (e) => {
+        let yun = numberYun();
+        let [x, y] = page.feature.coordinateTransformation(e.clientX, e.clientY);
+        yun.setPosition(x, y);
+    }
+}
+

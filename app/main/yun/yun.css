@@ -50,3 +50,11 @@
     background: #555;
     cursor: pointer;
 }
+
+.yun.error {
+    box-shadow: 0 0 5px #FF4136;
+}
+
+.yun.error>.box>.header {
+    background-color: #FF4136;
+}

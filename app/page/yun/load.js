@@ -62,7 +62,7 @@ function addCSSToDoc(url) {
     document.head.appendChild(link);
 }
 
-addJSToDoc('../../path/yuns/allData/allData.js');
-addJSToDoc('../../demo/index.js');
+addJSToDoc('../../path/yuns/dataType/dataType.js');
+// addJSToDoc('../../demo/index.js');
 
 

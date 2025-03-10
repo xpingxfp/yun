@@ -63,12 +63,12 @@ function handleDotEvents(dot, type) {
             } else {
                 supYun.dispatchEvent(eventList.YaddSubYun(subYun.id));
                 supYun.dispatchEvent(eventList.Yhandle((yun) => {
-                    if (!yun.data.paths) yun.data.paths = [];
-                    yun.data.paths.push(path);
+                    if (!yun.structure.paths) yun.structure.paths = [];
+                    yun.structure.paths.push(path);
                 }));
                 subYun.dispatchEvent(eventList.Yhandle((yun) => {
-                    if (!yun.data.paths) yun.data.paths = [];
-                    yun.data.paths.push(path);
+                    if (!yun.structure.paths) yun.structure.paths = [];
+                    yun.structure.paths.push(path);
                 }));
             }
             document.removeEventListener('mouseup', up);
@@ -143,14 +143,14 @@ export function connect(yun) {
     let dotInput = inputDot();
     yun.body.appendChild(dotOutput.body);
     yun.body.appendChild(dotInput.body);
-    yun.data.dots = [];
-    yun.data.dots.push(dotInput);
-    yun.data.dots.push(dotOutput);
+    yun.structure.dots = [];
+    yun.structure.dots.push(dotInput);
+    yun.structure.dots.push(dotOutput);
 
     yun.body.addEventListener('Ymove', () => {
-        if (!yun.data.paths) return;
-        for (let i = 0; i < yun.data.paths.length; i++) {
-            yun.data.paths[i].updata();
+        if (!yun.structure.paths) return;
+        for (let i = 0; i < yun.structure.paths.length; i++) {
+            yun.structure.paths[i].updata();
         }
     })
 }

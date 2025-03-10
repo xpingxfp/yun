@@ -18,6 +18,10 @@ export function zoom(yun) {
         }
 
         yun.setSize(size.w, size.h);
+        if (!yun.data.paths) return;
+        for (let i = 0; i < yun.data.paths.length; i++) {
+            yun.data.paths[i].updata();
+        }
     }
 
     yun.body.addEventListener('wheel', wheelHandler);

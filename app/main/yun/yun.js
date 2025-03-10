@@ -20,6 +20,11 @@ export class Yun {
         this.content = {};
     }
 
+    /**
+     * 设置尺寸
+     * @param {number} w - 宽度
+     * @param {number} h - 高度
+     */
     setSize(w, h) {
         if (w < 50) w = 50;
         if (h < 25) h = 25;
@@ -29,6 +34,11 @@ export class Yun {
         this.body.style.height = `${this.data.size.height}px`;
     }
 
+    /**
+     * 设置位置
+     * @param {number} x - X轴位置
+     * @param {number} y - Y轴位置
+     */
     setPosition(x, y) {
         this.data.pos.x = x;
         this.data.pos.y = y;
@@ -43,10 +53,18 @@ export class Yun {
         this.#eventDetection();
     }
 
+    /**
+     * 设置节点ID
+     * @param {string} id - 节点的唯一标识符
+     */
     setID(id) {
         this.body.id = id;
     }
 
+    /**
+     * 添加子节点
+     * @param {HTMLElement} element - 要添加的子节点元素
+     */
     addSubYun(element) {
         this.subYuns.push(element);
     }
@@ -87,48 +105,51 @@ export class Yun {
 
         this.body.addEventListener("YaddSubYun", function (e) {
             let subYun = document.querySelector(`#${e.detail}`);
-            yun.addSubYun(subYun);
+            yun.addSubYun([e.detail, subYun]);
+            let event = new CustomEvent("Nupdate", { detail: yun.body.id });
+            subYun.dispatchEvent(event);
         });
         addEventListener("NremoveSubYun", function (e) { });
+
         addEventListener("NinputOff", function (e) { });
         addEventListener("Noutput", function (e) { });
-        addEventListener("Ninput", function (e) { });
-        addEventListener("NgetData", function (e) { });
-        addEventListener("NputData", function (e) { })
-        addEventListener("Nupdate", function (e) { });
-        this.body.addEventListener("Yupdating", function (e) {
-            if (!yun.#handleNupdating(e)) return;
-            console.log("Yupdating");
 
+        // 自行处理，建议用于数据处理
+        addEventListener("Yinput", function () { });
+
+        this.body.addEventListener("YgetData", function (e) {
+            let supYun = document.querySelector(`#${e.detail}`);
+            let event = new CustomEvent("YputData", { detail: yun.body.id });
+            supYun.dispatchEvent(event);
+        });
+
+        this.body.addEventListener("YputData", function (e) {
+            let index = yun.subYuns.findIndex(subArray => subArray[0] === e.detail);
+            let sub = yun.subYuns[index][1];
+            let event = new CustomEvent("Yinput", { detail: { data: yun.data } });
+            sub.dispatchEvent(event);
+        });
+
+        this.body.addEventListener("Nupdate", function (e) {
+            let supYun = document.querySelector(`#${e.detail}`);
+            let event = new CustomEvent("YputData", { detail: yun.body.id });
+            supYun.dispatchEvent(event);
+        });
+
+        // 自行处理，建议用于应用变化
+        addEventListener("Yupdating", function () { });
+
+        this.body.addEventListener("YupdateComplete", function () {
+            for (let i = 0; i < yun.subYuns.length; i++) {
+                let subYun = yun.subYuns[i][1];
+                let event = new CustomEvent("Nupdate", { detail: yun.body.id });
+                subYun.dispatchEvent(event);
+            }
         });
         addEventListener("Nloop", function (e) { });
-        addEventListener("NupdateComplete", function (e) { });
         addEventListener('NchangeState', (e) => { });
     }
 
-    /**
-     * 设置处理 Nupdating 事件的回调函数
-     * @param {function} callback - 用户提供的回调函数
-     */
-    setUpdatingEventHandler(callback) {
-        if (typeof callback !== 'function') {
-            throw new Error('Callback must be a function');
-        }
-        this.callback = callback;
-    }
-
-    /**
-     * 内部方法，用于处理 Nupdating 事件
-     * @param {Event} e - The event object.
-     */
-    #handleNupdating(e) {
-        if (this.callback) {
-            this.callback(e);
-            return 1;
-        } else {
-            console.log('No callback function has been set.');
-        }
-    }
 }
 
 

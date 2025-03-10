@@ -15,6 +15,13 @@ export let eventList = {
     YaddSubYun: (id) => {
         let event = new CustomEvent("YaddSubYun", { detail: id });
         return event;
-
+    },
+    Yupdataing: () => {
+        let event = new CustomEvent("Yupdataing", { detail: null });
+        return event;
+    },
+    YupdateComplete: () => {
+        let event = new CustomEvent("YupdateComplete", { detail: null });
+        return event;
     }
 }
