@@ -1,15 +1,9 @@
 const CACHE_NAME = `yun-v1`;
-const MIME_STORE_NAME = 'mimeTypes';
 
 self.addEventListener('install', event => {
     event.waitUntil((async () => {
         const cache = await caches.open(CACHE_NAME);
-        await cache.addAll([
-            '/',
-            '/index.html',
-            '/manifest.json',
-            '/icon.png',
-        ]);
+        await cache.addAll([]);
         self.skipWaiting();
     })());
 });
@@ -50,67 +44,26 @@ self.addEventListener('fetch', event => {
                         const blob = await file.arrayBuffer();
                         return new Response(blob, {
                             headers: {
-                                'Content-Type': await getContentTypeFromDB(path)
+                                'Content-Type': file.type
                             }
                         });
                     }
                 }
-            } catch (error) {
-                console.error('无法获取文件:', error);
-            }
+            } catch (error) { }
             return fetch(event.request);
         }
     })());
 });
 
-async function getContentTypeFromDB(path) {
-    const db = await openMimeDb();
-    const transaction = db.transaction([MIME_STORE_NAME], 'readonly');
-    const store = transaction.objectStore(MIME_STORE_NAME);
-
-    const ext = path.split('.').pop().toLowerCase();
-    const request = store.get(ext);
-
-    return new Promise((resolve, reject) => {
-        request.onsuccess = () => {
-            resolve(request.result || 'application/octet-stream');
-        };
-        request.onerror = () => {
-            reject(new Error('Failed to retrieve MIME type'));
-        };
-    });
-}
-
-function openMimeDb() {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open('mimeDB', 1);
-
-        request.onupgradeneeded = (event) => {
-            const db = event.target.result;
-            db.createObjectStore(MIME_STORE_NAME, { keyPath: 'ext' });
-        };
-
-        request.onsuccess = (event) => {
-            resolve(event.target.result);
-        };
-
-        request.onerror = (event) => {
-            reject(new Error(`Database error: ${event.target.errorCode}`));
-        };
-    });
-}
-
 async function getDirHandle() {
     return new Promise((resolve, reject) => {
         let request = indexedDB.open('yunDB', 1);
 
-        request.onerror = (event) => {
-            console.error('Database error:', event.target.errorCode);
+        request.onerror = () => {
             resolve({ type: 'redirect', url: '/index.html' });
         };
 
-        request.onupgradeneeded = (event) => {
-            console.warn('indexedDB未注册');
+        request.onupgradeneeded = () => {
             resolve({ type: 'redirect', url: '/index.html' });
         }
 
@@ -147,15 +100,16 @@ async function getDirHandle() {
 async function getFileFromDirHandle(path, dirHandle) {
     let segments = path.split('/').filter(segment => segment !== '');
 
-    let yunHandle = await dirHandle.getDirectoryHandle('yun');
-    let currentHandle = await yunHandle.getDirectoryHandle('app');
+    let currentHandle = dirHandle;
 
     try {
         let lastSegment = segments[segments.length - 1];
         let fileNameParts = lastSegment.split('.');
         let isFile = fileNameParts.length > 1;
 
-        for (let i = 0; i < segments.length - 1; i++) {
+        let length = isFile ? segments.length - 1 : segments.length;
+
+        for (let i = 0; i < length; i++) {
             let segment = segments[i];
             currentHandle = await currentHandle.getDirectoryHandle(segment);
         }
@@ -170,7 +124,6 @@ async function getFileFromDirHandle(path, dirHandle) {
 
         return targetHandle;
     } catch (error) {
-        console.log('getting file from dir handle:', error);
         return null;
     }
 }

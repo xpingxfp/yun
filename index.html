@@ -395,124 +395,6 @@
             }
         }
 
-        function createMimeDB() {
-            let request = window.indexedDB.open('mimeDB', 1);
-
-            request.onerror = (error) => {
-                console.error(error);
-                let span = document.createElement("span");
-                span.innerHTML = "创建mimeDB的时候发生错误";
-                indexedDBSet.appendChild(span);
-            }
-
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
-                db.createObjectStore("mimeTypes", { keyPath: 'ext' });
-            };
-        }
-
-        async function addExtToMimeDB(ext, mimeType) {
-            try {
-                const db = await getDBInstance('mimeDB', 1);
-
-                const transaction = db.transaction(['mimeTypes'], "readwrite");
-                const objectStore = transaction.objectStore('mimeTypes');
-
-                const checkRequest = objectStore.get(ext);
-
-                checkRequest.onsuccess = async (event) => {
-                    if (!checkRequest.result) {
-                        const newItem = { ext: ext, type: mimeType };
-
-                        const requestUpdate = objectStore.add(newItem);
-
-                        requestUpdate.onerror = (event) => {
-                            console.error(`数据添加失败: ${ext} -> ${mimeType}`, event);
-                        };
-                    }
-
-                    transaction.oncomplete = () => {
-                        db.close();
-                    };
-                };
-
-                checkRequest.onerror = (event) => {
-                    console.error(`检查扩展名时发生错误: ${ext}`, event);
-                    transaction.abort();
-                };
-            } catch (error) {
-                console.error("添加扩展名时发生错误", error);
-            }
-        }
-
-        const mimeTypes = [
-            // 基本类型
-            { ext: '.html', type: 'text/html' },
-            { ext: '.css', type: 'text/css' },
-            { ext: '.js', type: 'application/javascript' },
-            { ext: '.json', type: 'application/json' },
-            { ext: '.xml', type: 'application/xml' },
-            { ext: '.png', type: 'image/png' },
-            { ext: '.jpg', type: 'image/jpeg' },
-            { ext: '.jpeg', type: 'image/jpeg' },
-            { ext: '.gif', type: 'image/gif' },
-            { ext: '.svg', type: 'image/svg+xml' },
-            { ext: '.pdf', type: 'application/pdf' },
-            { ext: '.zip', type: 'application/zip' },
-            { ext: '.txt', type: 'text/plain' },
-
-            // 更多文本类型
-            { ext: '.csv', type: 'text/csv' },
-            { ext: '.rtf', type: 'application/rtf' },
-
-            // 更多文档类型
-            { ext: '.doc', type: 'application/msword' },
-            { ext: '.docx', type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
-            { ext: '.xls', type: 'application/vnd.ms-excel' },
-            { ext: '.xlsx', type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
-            { ext: '.ppt', type: 'application/vnd.ms-powerpoint' },
-            { ext: '.pptx', type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' },
-            { ext: '.odt', type: 'application/vnd.oasis.opendocument.text' },
-            { ext: '.ods', type: 'application/vnd.oasis.opendocument.spreadsheet' },
-            { ext: '.odp', type: 'application/vnd.oasis.opendocument.presentation' },
-
-            // 视频类型
-            { ext: '.mp4', type: 'video/mp4' },
-            { ext: '.avi', type: 'video/x-msvideo' },
-            { ext: '.mov', type: 'video/quicktime' },
-            { ext: '.mkv', type: 'video/x-matroska' },
-            { ext: '.webm', type: 'video/webm' },
-            { ext: '.flv', type: 'video/x-flv' },
-            { ext: '.wmv', type: 'video/x-ms-wmv' },
-            { ext: '.m4v', type: 'video/x-m4v' },
-            { ext: '.3gp', type: 'video/3gpp' },
-            { ext: '.3g2', type: 'video/3gpp2' },
-
-            // 音频类型
-            { ext: '.mp3', type: 'audio/mpeg' },
-            { ext: '.wav', type: 'audio/wav' },
-            { ext: '.ogg', type: 'audio/ogg' },
-            { ext: '.aac', type: 'audio/aac' },
-            { ext: '.flac', type: 'audio/flac' },
-            { ext: '.wma', type: 'audio/x-ms-wma' },
-            { ext: '.m4a', type: 'audio/mp4' },
-            { ext: '.amr', type: 'audio/amr' },
-            { ext: '.mid', type: 'audio/midi' },
-            { ext: '.midi', type: 'audio/midi' },
-            { ext: '.ra', type: 'audio/x-pn-realaudio' },
-
-            // 更多图像类型
-            { ext: '.bmp', type: 'image/bmp' },
-            { ext: '.tiff', type: 'image/tiff' },
-            { ext: '.ico', type: 'image/x-icon' },
-
-            // 应用程序类型
-            { ext: '.exe', type: 'application/x-msdownload' },
-            { ext: '.msi', type: 'application/x-ms-installer' },
-            { ext: '.apk', type: 'application/vnd.android.package-archive' },
-        ];
-
-
         if ('serviceWorker' in navigator) {
             serviceWorkerColumn.classList.add("ok");
             let span = document.createElement("span");
@@ -542,18 +424,7 @@
         if ('indexedDB' in window) {
             indexedDBColum.classList.add('ok');
             createYunDB();
-            createMimeDB();
             indexedDBSet.innerHTML += "yunDB已经成功创建</br>mimeDB已经成功创建</br>";
-            (async () => {
-                try {
-                    for (let mimeType of mimeTypes) {
-                        await addExtToMimeDB(mimeType.ext, mimeType.type);
-                    }
-                    indexedDBSet.innerHTML += "mimeDB类型已经超过添加</br>"
-                } catch (error) {
-                    console.error("Error getting database:", error);
-                }
-            })();
         } else {
             indexedDBColum.classList.add('error');
             indexedDBSet.innerHTML = "你的浏览器不支持indexedDB</br>请下载支持indexedDB的浏览器"
@@ -624,13 +495,11 @@
         async function setSave() {
             let appIDB = await getappDirhande();
             let appDirHandle = appIDB.result;
-            let yunDir = await appDirHandle.getDirectoryHandle('yun');
-            let saveDirHandle = await yunDir.getDirectoryHandle('save');
+            let saveDirHandle = await appDirHandle.getDirectoryHandle('save');
             saveSaveDir(saveDirHandle, 'dirHandle');
             saveSaveDir([], 'recent');
             saveSaveDir(null, 'current');
         }
-
 
         if (window.requestFileSystem || window.webkitRequestFileSystem) {
             fileSystemColume.classList.add("set");
@@ -639,12 +508,14 @@
                 if (dirHandleRequest.result) {
                     selectAppDirHandle.innerHTML = "已经选择安装位置";
                     fileSystemColume.setState("ok");
+                    CheckPermissions();
                 } else {
                     selectAppDirHandle.innerHTML = "点击选择安装位置";
                     selectAppDirHandle.onclick = async () => {
                         let dirHandle = await window.showDirectoryPicker();
                         await createFilesystem(dirHandle);
-                        await saveAppDir(dirHandle, "dirHandle");
+                        let yunDirHandle = await dirHandle.getDirectoryHandle("yun")
+                        await saveAppDir(yunDirHandle, "dirHandle");
                         setSave();
                         fileSystemColume.setState("ok");
                         CheckPermissions();
@@ -691,7 +562,6 @@
                 permissionColumn.setState("error");
             }
         }
-        CheckPermissions();
     </script>
     <!-- <script src="./load.js"></script> -->
 </body>
