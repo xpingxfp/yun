@@ -115,6 +115,7 @@ export function draggable(yun) {
     yun.body.addEventListener('mousedown', mouseDownHandler);
 
     return function destroy() {
+        if (!yun.body) return;
         yun.body.removeEventListener('mousedown', mouseDownHandler);
     };
 }

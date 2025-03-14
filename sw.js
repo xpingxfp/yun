@@ -6,10 +6,9 @@ self.addEventListener('install', event => {
         const cache = await caches.open(CACHE_NAME);
         await cache.addAll([
             '/',
-            '/load.js',
+            '/index.html',
             '/manifest.json',
             '/icon.png',
-            '/install.html'
         ]);
         self.skipWaiting();
     })());
@@ -41,7 +40,6 @@ self.addEventListener('fetch', event => {
                 const dirHandleOrRedirect = await getDirHandle();
 
                 if (dirHandleOrRedirect.type === 'redirect') {
-                    // 返回 load.js 文件
                     const response = await fetch(dirHandleOrRedirect.url);
                     return response;
                 } else {
@@ -108,12 +106,12 @@ async function getDirHandle() {
 
         request.onerror = (event) => {
             console.error('Database error:', event.target.errorCode);
-            resolve({ type: 'redirect', url: 'install.html' });
+            resolve({ type: 'redirect', url: '/index.html' });
         };
 
         request.onupgradeneeded = (event) => {
             console.warn('indexedDB未注册');
-            resolve({ type: 'redirect', url: 'install.html' });
+            resolve({ type: 'redirect', url: '/index.html' });
         }
 
         request.onsuccess = async (event) => {
@@ -131,13 +129,13 @@ async function getDirHandle() {
                 let dirHandle = getDirHandleRequest.result;
 
                 if (!dirHandle) {
-                    reject(new Error("无法找到或恢复目录句柄"));
+                    resolve({ type: 'redirect', url: '/index.html' });
                     return;
                 }
 
                 const permissionStatus = await dirHandle.queryPermission();
                 if (permissionStatus !== 'granted') {
-                    reject(new Error(`请给予文件访问权限`));
+                    resolve({ type: 'redirect', url: '/index.html' });
                     return;
                 }
                 resolve(dirHandle);
@@ -146,11 +144,9 @@ async function getDirHandle() {
     });
 }
 
-async function getFileFromDirHandle(path) {
-
+async function getFileFromDirHandle(path, dirHandle) {
     let segments = path.split('/').filter(segment => segment !== '');
 
-    let dirHandle = await getDirHandle();
     let yunHandle = await dirHandle.getDirectoryHandle('yun');
     let currentHandle = await yunHandle.getDirectoryHandle('app');
 
@@ -174,6 +170,7 @@ async function getFileFromDirHandle(path) {
 
         return targetHandle;
     } catch (error) {
+        console.error('Error getting file from dir handle:', error);
         return null;
     }
 }

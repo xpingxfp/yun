@@ -1,4 +1,4 @@
-import { Dot, Path, pathBox, yunBox, page, eventList } from "../../../index.js";
+import { Dot, Path, pathBox, yunBox, page, eventList, menuInstance } from "../../../index.js";
 
 let dots = [];
 

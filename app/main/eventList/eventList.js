@@ -23,5 +23,9 @@ export let eventList = {
     YupdateComplete: () => {
         let event = new CustomEvent("YupdateComplete", { detail: null });
         return event;
+    },
+    Ydelete: () => {
+        let event = new CustomEvent("Ydelete", { detail: null });
+        return event;
     }
 }

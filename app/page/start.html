@@ -105,13 +105,13 @@
 
             let transaction = db.transaction(['save'], 'readwrite');
             let save_store = transaction.objectStore('save');
-            let needRequest = save_store.put({ name: "need", vakue: null });
+            let TempRequest = save_store.put({ name: "Temp", vakue: null });
 
-            needRequest.onerror = (error) => {
+            TempRequest.onerror = (error) => {
                 console.error(error);
             }
 
-            needRequest.onsuccess = (event) => {
+            TempRequest.onsuccess = (event) => {
                 console.log("success");
             }
 

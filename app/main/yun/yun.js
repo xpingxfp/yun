@@ -10,6 +10,9 @@ function generateRandomId() {
     return `N${timestamp}${randomPart}`;
 }
 
+
+let yuns = [];
+
 // 节点类
 export class Yun {
     constructor() {
@@ -18,6 +21,7 @@ export class Yun {
         this.body = null;
         this.state = 'free';
         this.content = {};
+        yuns.push(this);
     }
 
     /**
@@ -63,10 +67,27 @@ export class Yun {
 
     /**
      * 添加子节点
+     * @param {id} id - 目标id
      * @param {HTMLElement} element - 要添加的子节点元素
      */
-    addSubYun(element) {
-        this.subYuns.push(element);
+    addSubYun(id, element) {
+        this.subYuns.push([id, element]);
+    }
+
+    remove() {
+        for (let i = 0; i < yuns.length; i++) {
+            for (let j = 0; j < yuns[i].subYuns.length; j++) {
+                if (yuns[i].subYuns[j][0] == this.body.id) {
+                    yuns[i].body.dispatchEvent(new CustomEvent("YremoveSubYun", { detail: this.body.id }));
+                    break;
+                }
+            }
+        };
+        this.subYuns = [];
+        if (this.body && this.body.parentNode) {
+            this.body.parentNode.removeChild(this.body);
+        }
+        this.body = null;
     }
 
     // 事件检测
@@ -101,15 +122,25 @@ export class Yun {
             e.detail(yun);
         });
 
-        addEventListener("Ndelete", function (e) { });
+        this.body.addEventListener("Ydelete", function () {
+            yun.remove();
+        });
 
         this.body.addEventListener("YaddSubYun", function (e) {
             let subYun = document.querySelector(`#${e.detail}`);
-            yun.addSubYun([e.detail, subYun]);
-            let event = new CustomEvent("Nupdate", { detail: yun.body.id });
+            yun.addSubYun(e.detail, subYun);
+            let event = new CustomEvent("Yupdate", { detail: yun.body.id });
             subYun.dispatchEvent(event);
         });
-        addEventListener("NremoveSubYun", function (e) { });
+
+        this.body.addEventListener("YremoveSubYun", function (e) {
+            for (let i = 0; i < this.subYuns.length; i++) {
+                if (this.subYuns[i][0] === e.detail) {
+                    this.subYuns.splice(i, 1);
+                    break;
+                }
+            }
+        }.bind(this));
 
         addEventListener("NinputOff", function (e) { });
         addEventListener("Noutput", function (e) { });
@@ -130,7 +161,7 @@ export class Yun {
             sub.dispatchEvent(event);
         });
 
-        this.body.addEventListener("Nupdate", function (e) {
+        this.body.addEventListener("Yupdate", function (e) {
             let supYun = document.querySelector(`#${e.detail}`);
             let event = new CustomEvent("YputData", { detail: yun.body.id });
             supYun.dispatchEvent(event);
@@ -142,7 +173,7 @@ export class Yun {
         this.body.addEventListener("YupdateComplete", function () {
             for (let i = 0; i < yun.subYuns.length; i++) {
                 let subYun = yun.subYuns[i][1];
-                let event = new CustomEvent("Nupdate", { detail: yun.body.id });
+                let event = new CustomEvent("Yupdate", { detail: yun.body.id });
                 subYun.dispatchEvent(event);
             }
         });

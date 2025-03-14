@@ -29,9 +29,9 @@ function createResizer(yun, options) {
             yun.body.classList.remove('resizing');
             document.removeEventListener("mousemove", resizeListener);
             document.removeEventListener("mouseup", upListener);
-            if (!yun.data.paths) return;
-            for (let i = 0; i < yun.data.paths.length; i++) {
-                yun.data.paths[i].updata();
+            if (!yun.structure.paths) return;
+            for (let i = 0; i < yun.structure.paths.length; i++) {
+                yun.structure.paths[i].updata();
             }
         };
 

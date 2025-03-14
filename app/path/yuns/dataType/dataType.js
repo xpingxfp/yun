@@ -63,13 +63,6 @@ function numberYun() {
 }
 
 let dataType = {
-    "打印信息": () => {
-        let targetElement = menuInstance.event.target;
-        let ancestorElement = targetElement.closest('.yun');
-        ancestorElement.dispatchEvent(eventList.Yhandle((yun) => {
-            console.log(yun);
-        }));
-    },
     "数值": (e) => {
         let yun = numberYun();
         let [x, y] = page.feature.coordinateTransformation(e.clientX, e.clientY);
@@ -79,3 +72,21 @@ let dataType = {
 
 let func = menuInstance.setFunc(dataType, "数据类型");
 menuInstance.bindingFuncTarget(func);
+
+let Yfunc = {
+    "打印信息": () => {
+        let targetElement = menuInstance.event.target;
+        let ancestorElement = targetElement.closest('.yun');
+        ancestorElement.dispatchEvent(eventList.Yhandle((yun) => {
+            console.log(yun);
+        }));
+    },
+    "删除": () => {
+        let targetElement = menuInstance.event.target;
+        let ancestorElement = targetElement.closest('.yun');
+        ancestorElement.dispatchEvent(eventList.Ydelete());
+    }
+}
+
+let funcD = menuInstance.setFunc(Yfunc, "操作");
+menuInstance.bindingFuncTarget(funcD, "yun");
