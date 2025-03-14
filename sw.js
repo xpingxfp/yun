@@ -170,7 +170,7 @@ async function getFileFromDirHandle(path, dirHandle) {
 
         return targetHandle;
     } catch (error) {
-        console.error('Error getting file from dir handle:', error);
+        console.log('getting file from dir handle:', error);
         return null;
     }
 }
