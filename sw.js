@@ -3,7 +3,12 @@ const CACHE_NAME = `yun-v1`;
 self.addEventListener('install', event => {
     event.waitUntil((async () => {
         const cache = await caches.open(CACHE_NAME);
-        await cache.addAll([]);
+        await cache.addAll([
+            '/',
+            'index.html',
+            'manifest.json',
+            'icon.png'
+        ]);
         self.skipWaiting();
     })());
 });

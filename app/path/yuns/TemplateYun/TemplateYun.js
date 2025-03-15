@@ -18,7 +18,7 @@ export class TemplateYun extends Yun {
         this.createContentBox();
         this.drag();
         this.event();
-        element.func.yun.zoom(this);
+        // element.func.yun.zoom(this);
         element.func.yun.resize(this);
         element.func.yun.connect(this);
     }

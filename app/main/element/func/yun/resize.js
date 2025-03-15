@@ -1,4 +1,4 @@
-import { page } from "../../../index.js";
+import { page, actionHistoryHandler } from "../../../index.js";
 function createResizer(yun, options) {
     const resizer = document.createElement("div");
     resizer.classList.add("resize", ...options.classes);
@@ -13,14 +13,15 @@ function createResizer(yun, options) {
 
         const startPos = { x: event.clientX, y: event.clientY };
         const startSize = { w: yun.data.size.width, h: yun.data.size.height };
+        let [newWidth, newHeight] = [];
 
         resizeListener = (e) => {
             const offset = {
                 x: (e.clientX - startPos.x) / page.data.scale,
                 y: (e.clientY - startPos.y) / page.data.scale
             };
-            const newWidth = startSize.w + (options.resizeX ? offset.x : 0);
-            const newHeight = startSize.h + (options.resizeY ? offset.y : 0);
+            newWidth = startSize.w + (options.resizeX ? offset.x : 0);
+            newHeight = startSize.h + (options.resizeY ? offset.y : 0);
             yun.setSize(newWidth, newHeight);
             yun.body.classList.add('resizing');
         };
@@ -29,10 +30,30 @@ function createResizer(yun, options) {
             yun.body.classList.remove('resizing');
             document.removeEventListener("mousemove", resizeListener);
             document.removeEventListener("mouseup", upListener);
+            function undoFunc() {
+                yun.setSize(startSize.w, startSize.h)
+                actionHistoryHandler.addRedo(redoFunc);
+                if (!yun.structure.paths) return;
+                for (let i = 0; i < yun.structure.paths.length; i++) {
+                    yun.structure.paths[i].updata();
+                }
+            }
+
+            function redoFunc() {
+                yun.setSize(newWidth, newHeight);
+                actionHistoryHandler.addUndo(undoFunc);
+                if (!yun.structure.paths) return;
+                for (let i = 0; i < yun.structure.paths.length; i++) {
+                    yun.structure.paths[i].updata();
+                }
+            }
+
+            actionHistoryHandler.addUndo(undoFunc);
             if (!yun.structure.paths) return;
             for (let i = 0; i < yun.structure.paths.length; i++) {
                 yun.structure.paths[i].updata();
             }
+
         };
 
         // 防止鼠标抖动

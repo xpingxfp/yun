@@ -20,5 +20,12 @@ export let shortcut = {
         link.href = adjustedCssPath;
         link.rel = 'stylesheet';
         document.head.appendChild(link);
+    },
+    debounce: (func, wait) => {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
     }
 }

@@ -1,6 +1,5 @@
 import { page, svgBox, pathBox } from "../index.js";
 
-
 let paths = [];
 
 export class Path {
@@ -42,6 +41,7 @@ export class Path {
         }
         return found;
     }
+
     draw() {
         this.updateBox();
         this.body.setAttribute('d', this.data.d);

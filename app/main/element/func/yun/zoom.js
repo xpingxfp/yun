@@ -1,11 +1,11 @@
-
+/** 不能实现撤销和重做功能 */
+import { actionHistoryHandler } from "../../../index.js";
 /** 
  * @param {Yun} yun
  * @returns {function} destroy
  */
 export function zoom(yun) {
     function wheelHandler(e) {
-        if (!e.ctrlKey) return;
         e.preventDefault();
 
         const zoomDirection = Math.sign(e.deltaY) > 0 ? -1 : 1;
@@ -24,7 +24,34 @@ export function zoom(yun) {
         }
     }
 
-    yun.body.addEventListener('wheel', wheelHandler);
+    document.addEventListener("keydown", (e) => {
+        if (!e.ctrlKey) return;
+        let startSize = {
+            w: yun.data.size.width,
+            h: yun.data.size.height
+        }
+        yun.body.addEventListener('wheel', wheelHandler);
+
+        document.addEventListener("keyup", (e) => {
+            yun.body.removeEventListener('wheel', wheelHandler);
+            let newSize = {
+                w: yun.data.size.width,
+                h: yun.data.size.height
+            }
+
+            function undoFunc() {
+                yun.setSize(startSize.w, startSize.h);
+                actionHistoryHandler.addRedo(redoFunc);
+            }
+
+            function redoFunc() {
+                yun.setSize(newSize.w, newSize.h);
+                actionHistoryHandler.addUndo(undoFunc);
+            }
+
+            // actionHistoryHandler.addUndo(undoFunc);
+        })
+    })
 
     return function destroy() {
         yun.body.removeEventListener('wheel', wheelHandler);

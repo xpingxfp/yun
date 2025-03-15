@@ -97,11 +97,12 @@ export class CustomContextMenu extends FuncComponent {
             menuBox.appendChild(func.element);
         });
 
+        // 显示菜单
+        this.toggleVisibility(menuBox, true);
+
         // 设置菜单的位置
         this.setPosition(menuBox, e.pageX, e.pageY);
 
-        // 显示菜单
-        this.toggleVisibility(menuBox, true);
     }
 
     /**

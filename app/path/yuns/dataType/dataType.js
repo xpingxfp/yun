@@ -1,4 +1,4 @@
-import { TemplateYun, page, eventList, menuInstance, shortcut } from "../index.js";
+import { TemplateYun, page, eventList, menuInstance, shortcut, actionHistoryHandler, yunBox } from "../index.js";
 
 shortcut.addCSSToDoc('path/yuns/dataType/dataType.css');
 
@@ -62,12 +62,29 @@ function numberYun() {
     return yun;
 }
 
-let dataType = {
-    "数值": (e) => {
-        let yun = numberYun();
-        let [x, y] = page.feature.coordinateTransformation(e.clientX, e.clientY);
+function addNumberYunForPage(e) {
+    let yun = numberYun();
+    let [x, y] = page.feature.coordinateTransformation(e.clientX, e.clientY);
+    yun.setPosition(x, y);
+
+    let undoFunc = () => {
+        yun.body.remove();
+        actionHistoryHandler.addRedo(redoFunc);
+    };
+
+    let redoFunc = () => {
+        yunBox.appendChild(yun.body);
         yun.setPosition(x, y);
-    }
+        actionHistoryHandler.addUndo(undoFunc);
+    };
+
+    actionHistoryHandler.addUndo(undoFunc);
+
+    return { undo: undoFunc, redo: redoFunc };
+}
+
+let dataType = {
+    "数值": addNumberYunForPage
 }
 
 let func = menuInstance.setFunc(dataType, "数据类型");

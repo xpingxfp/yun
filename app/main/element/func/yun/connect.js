@@ -1,4 +1,4 @@
-import { Dot, Path, pathBox, yunBox, page, eventList, menuInstance } from "../../../index.js";
+import { Dot, Path, pathBox, yunBox, page, eventList, actionHistoryHandler } from "../../../index.js";
 
 let dots = [];
 
@@ -61,15 +61,50 @@ function handleDotEvents(dot, type) {
                 path.remove();
                 path = null;
             } else {
-                supYun.dispatchEvent(eventList.YaddSubYun(subYun.id));
-                supYun.dispatchEvent(eventList.Yhandle((yun) => {
-                    if (!yun.structure.paths) yun.structure.paths = [];
-                    yun.structure.paths.push(path);
-                }));
-                subYun.dispatchEvent(eventList.Yhandle((yun) => {
-                    if (!yun.structure.paths) yun.structure.paths = [];
-                    yun.structure.paths.push(path);
-                }));
+                function connectYun(supYun, subYun) {
+                    supYun.dispatchEvent(eventList.YaddSubYun(subYun.id));
+                    supYun.dispatchEvent(eventList.Yhandle((yun) => {
+                        if (!yun.structure.paths) yun.structure.paths = [];
+                        addPath(yun.structure.paths, path);
+                    }));
+                    subYun.dispatchEvent(eventList.Yhandle((yun) => {
+                        if (!yun.structure.paths) yun.structure.paths = [];
+                        addPath(yun.structure.paths, path);
+                    }));
+
+                    function undoFunc() {
+                        supYun.dispatchEvent(eventList.YremoveSubYun(subYun.id));
+                        supYun.dispatchEvent(eventList.Yhandle((yun) => {
+                            removePath(yun.structure.paths, path);
+                        }));
+                        subYun.dispatchEvent(eventList.Yhandle((yun) => {
+                            removePath(yun.structure.paths, path);
+                        }));
+
+                        actionHistoryHandler.addRedo(redoFunc);
+
+                        path.body.remove();
+                    }
+
+                    function redoFunc() {
+
+                        supYun.dispatchEvent(eventList.YremoveSubYun(subYun.id));
+                        supYun.dispatchEvent(eventList.Yhandle((yun) => {
+                            addPath(yun.structure.paths, path);
+                        }));
+                        subYun.dispatchEvent(eventList.Yhandle((yun) => {
+                            addPath(yun.structure.paths, path);
+                        }));
+
+                        pathBox.appendChild(path.body);
+                        actionHistoryHandler.addUndo(undoFunc);
+                    }
+
+                    return { undo: undoFunc, redo: redoFunc };
+                }
+
+                let { undo } = connectYun(supYun, subYun);
+                actionHistoryHandler.addUndo(undo);
             }
             document.removeEventListener('mouseup', up);
             document.removeEventListener('mousemove', move);
@@ -112,6 +147,16 @@ function handleDotEvents(dot, type) {
 
         document.addEventListener('mousemove', move);
         document.addEventListener('mouseup', up);
+    });
+}
+
+function addPath(paths, path) {
+    paths.push(path);
+}
+
+function removePath(paths, pathToRemove) {
+    return paths.filter((path) => {
+        return path !== pathToRemove;
     });
 }
 

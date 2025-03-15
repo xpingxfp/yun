@@ -16,6 +16,11 @@ export let eventList = {
         let event = new CustomEvent("YaddSubYun", { detail: id });
         return event;
     },
+    /** @param {id} id */
+    YremoveSubYun: (id) => {
+        let event = new CustomEvent("YremoveSubYun", { detail: id });
+        return event;
+    },
     Yupdataing: () => {
         let event = new CustomEvent("Yupdataing", { detail: null });
         return event;

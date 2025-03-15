@@ -1,4 +1,4 @@
-import { page, ghostElement } from "../../../index.js";
+import { page, ghostElement, actionHistoryHandler, shortcut } from "../../../index.js";
 
 function updateGhostSizeAndPosition(width, height, x, y) {
     ghostElement.style.width = `${width}px`;
@@ -17,8 +17,8 @@ function startAutoScroll() {
 
         const rect = ghostElement.getBoundingClientRect();
         let deltaX = 0, deltaY = 0;
-        const distance = 30; // 距离窗口边缘的距离
-        const scrollSpeedFactor = 0.01; // 根据需要调整
+        const distance = 30;
+        const scrollSpeedFactor = 0.01;
 
         if (rect.top < distance) deltaY = (distance - rect.top) * scrollSpeedFactor;
         else if (rect.bottom > window.innerHeight - distance) deltaY = -(rect.bottom - window.innerHeight + distance) * scrollSpeedFactor;
@@ -49,6 +49,7 @@ export function draggable(yun) {
             x: yun.data.pos.x * page.data.scale + page.data.pos.x,
             y: yun.data.pos.y * page.data.scale + page.data.pos.y,
         };
+
         let startPos = { x: e.clientX, y: e.clientY };
         let pageStartPos = { x: page.data.pos.x, y: page.data.pos.y };
         let offset = { x: 0, y: 0 };
@@ -87,23 +88,37 @@ export function draggable(yun) {
 
         function mouseUpHandler(e) {
             if (page.state != 'yunMove') return;
-            if (e.button == 0) {
-                let moveEvent = new CustomEvent("Ymove", {
-                    detail: {
-                        dx: (offset.x + pageStartPos.x - page.data.pos.x) / page.data.scale,
-                        dy: (offset.y + pageStartPos.y - page.data.pos.y) / page.data.scale
-                    }
-                });
-                let checkedyuns = document.querySelectorAll(".checked");
-                for (let i = 0; i < checkedyuns.length; i++) {
-                    checkedyuns[i].dispatchEvent(moveEvent);
-                }
 
+            if (e.button == 0) {
+                let checkedyuns = document.querySelectorAll(".checked");
+                function moveYun(dx, dy) {
+                    let moveEvent = new CustomEvent("Ymove", { detail: { dx, dy } });
+                    for (let i = 0; i < checkedyuns.length; i++) {
+                        checkedyuns[i].dispatchEvent(moveEvent);
+                    }
+
+                    function undoFunc() {
+                        moveYun(-dx, -dy);
+                        actionHistoryHandler.addRedo(redoFunc)
+                    }
+
+                    function redoFunc() {
+                        moveYun(dx, dy);
+                        actionHistoryHandler.addUndo(undoFunc)
+                    }
+
+                    return { undo: undoFunc, redo: redoFunc };
+
+                }
+                let [dx, dy] = [(offset.x + pageStartPos.x - page.data.pos.x) / page.data.scale, (offset.y + pageStartPos.y - page.data.pos.y) / page.data.scale]
+
+                let { undo } = moveYun(dx, dy)
+                actionHistoryHandler.addUndo(undo);
             }
             page.state = 'free';
             ghostElement.style.display = 'none';
             yun.body.classList.remove('moveing');
-            document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('mousemove', shortcut.debounce((e) => { mouseUpHandler(e) }, 100));
             document.removeEventListener('mouseup', mouseUpHandler);
             cancelAnimationFrame(autoScrollTimer);
         }
