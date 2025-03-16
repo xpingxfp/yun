@@ -1,1 +1,1 @@
-export { getCurrentFile } from "./file.js"
+export { getCurrentFile, writeToLog, FileStreamQueue } from "./file.js"

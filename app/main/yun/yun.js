@@ -1,6 +1,6 @@
 const style = document.createElement('link');
 style.rel = 'stylesheet';
-style.href = '../../main/yun/yun.css';
+style.href = '/app/main/yun/yun.css';
 document.head.appendChild(style);
 
 // 随机id

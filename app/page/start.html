@@ -9,10 +9,12 @@
             padding: 0;
             margin: 0;
             user-select: none;
+            box-shadow: 0 0 1px 1px #000;
         }
 
         body {
             height: 100vh;
+            width: 100vw;
         }
 
         .header {
@@ -22,27 +24,45 @@
 
         .header .left {
             flex: 1;
+            padding: 30px 0;
         }
 
         .header .content {
             flex: 4;
             position: relative;
             display: flex;
-            padding: 5% 3%;
+            padding: 20px 3%;
         }
 
         .header .content .message {
             height: 30px;
             flex: 5;
-            background-color: aqua;
+            background-color: #F27ED35f;
             border-radius: 5px;
+            line-height: 30px;
+            padding: 0 8px;
+            z-index: 2;
         }
 
         .header .content button {
             flex: 1;
             height: 30px;
             margin: 0 20px;
+            background-color: #F27ED35f;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            z-index: 2;
         }
+
+        .header .content button:hover {
+            background-color: #F27ED37f;
+        }
+
+        .header .content button:active {
+            background-color: #F27ED38f;
+        }
+
 
         .header .content img {
             position: absolute;
@@ -51,7 +71,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: -1;
         }
 
         .header .right {
@@ -63,18 +82,20 @@
         }
 
         footer {
-            height: 20%;
+            position: absolute;
+            height: 18%;
+            width: 100%;
             display: flex;
             justify-content: space-between;
             text-align: center;
             align-items: center;
-            padding: 0 30px;
+            bottom: 0;
         }
 
         footer .file {
             width: 100px;
             height: 50px;
-            background-color: coral;
+            background-color: #F27ED3;
             border-radius: 5px;
             line-height: 50px;
             overflow: hidden;
@@ -85,13 +106,25 @@
         }
 
         footer .file:active {
-            background-color: rgb(255, 96, 39);
+            background-color: #F2A7DE;
         }
 
         button {
             height: 10%;
             width: 80%;
             margin: 5%;
+            background-color: #F27ED3;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #F27ED38f;
+        }
+
+        button:active {
+            background-color: #733C64;
         }
 
         footer.none {
@@ -118,10 +151,18 @@
     <footer></footer>
     <script>
         async function openFile() {
-            let dirHandle = await window.showDirectoryPicker();
-            await setRecent(dirHandle);
-            await setCurrent(dirHandle);
-            updateContent();
+            try {
+                let dirHandle = await window.showDirectoryPicker();
+                await setRecent(dirHandle);
+                await setCurrent(dirHandle);
+                updateContent();
+            } catch (err) {
+                if (err.name === "AbortError") {
+                    console.log("用户取消选择");
+                } else {
+                    console.error(err);
+                }
+            }
         }
 
         function entrie() {
@@ -171,7 +212,37 @@
             }
         }
 
-        (async () => {
+        async function checkDirectory(directoryHandle) {
+            try {
+                let accessible = false;
+                for await (const entry of directoryHandle.values()) {
+                    accessible = true;
+                    break;
+                }
+
+                if (!accessible) {
+                    return false;
+                }
+
+                let configFile = await directoryHandle.getFileHandle("config.json", { create: false });
+
+                let yunFile = await directoryHandle.getFileHandle("yun.json", { create: false });
+
+                if (configFile, yunFile) {
+                    return true;
+                }
+            } catch (err) {
+                if (err.name === 'NotFoundError') {
+                    return false;
+                } else {
+                    console.error('发生错误:', err);
+                    throw err;
+                }
+            }
+        }
+
+
+        async function updateRecent() {
             let yunDB = await getDBInstance("yunDB");
 
             let transaction = yunDB.transaction(['save'], 'readonly');
@@ -192,7 +263,12 @@
                     let showHnadle = recent.at(-1);
                     await setCurrent(showHnadle);
                     updateContent();
-                    recent.reverse().forEach(dirHandle => {
+                    recent.reverse().forEach(async dirHandle => {
+                        let isOk = await checkDirectory(dirHandle);
+                        if (!isOk) {
+                            setRecent(dirHandle, true);
+                            return;
+                        }
                         let fileBox = document.createElement('div');
                         fileBox.classList.add("file");
                         fileBox.innerHTML = dirHandle.name;
@@ -204,8 +280,9 @@
                     });
                 }
             }
+        }
 
-        })()
+        updateRecent();
 
         async function getDirHandle() {
             return new Promise((resolve, reject) => {
@@ -258,7 +335,7 @@
             }
         }
 
-        async function setRecent(value) {
+        async function setRecent(value, remove = false) {
             try {
                 let yunDB = await getDBInstance("yunDB");
 
@@ -281,14 +358,17 @@
                         recent.shift();
                     }
 
-                    recent.push(value);
+                    if (remove) {
+                        recent = recent.filter(item => item != value);
+                    } else {
+                        recent.push(value);
+                    }
 
                     let transaction = yunDB.transaction(['save'], 'readwrite');
                     let save_store = transaction.objectStore('save');
                     let putRequest = save_store.put(recent, "recent");
 
                     putRequest.onsuccess = () => {
-                        console.log("recent 数据更新成功");
                     };
 
                     putRequest.onerror = (event) => {
@@ -325,8 +405,8 @@
                     .catch(error => console.error(`Failed to remove entry ${name}:`, error));
             }
 
-            let logFile = await TempDirHandle.getFileHandle("yun.log", { create: true });
-            let TempFile = await TempDirHandle.getFileHandle("Temp.json", { create: true });
+            let logDir = await TempDirHandle.getDirectoryHandle("logs", { create: true });
+            let yunFile = await TempDirHandle.getFileHandle("yun.json", { create: true });
             let configFile = await TempDirHandle.getFileHandle("config.json", { create: true });
             let snapshotFile = await TempDirHandle.getFileHandle("snapshot.jpg", { create: true })
 

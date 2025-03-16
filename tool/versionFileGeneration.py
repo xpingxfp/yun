@@ -64,5 +64,5 @@ def generate_folder_json(folder_path, output_file, ignore_folders=None):
 # 使用示例
 path = "G:/yun/app"
 output_path = os.path.join(path, 'version.json')
-ignore_list = ['path']  # 指定要忽略的文件夹
+ignore_list = ['demo']  # 指定要忽略的文件夹
 generate_folder_json(path, output_path, ignore_folders=ignore_list)
