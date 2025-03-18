@@ -3,6 +3,8 @@ if (!navigator.onLine) {
     isOnline = false;
 }
 
+window.basePath = "/";
+
 window.addEventListener('online', function () {
     isOnline = true;
 });
@@ -25,5 +27,5 @@ function addCSSToDoc(url) {
     document.head.appendChild(link);
 }
 
-addJSToDoc('/app/path/yuns/dataType/dataType.js');
+addJSToDoc(`${basePath}app/path/yuns/dataType/dataType.js`);
 

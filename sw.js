@@ -1,13 +1,14 @@
 const CACHE_NAME = `yun-v1`;
+const basePath = "/"
 
 self.addEventListener('install', event => {
     event.waitUntil((async () => {
         const cache = await caches.open(CACHE_NAME);
         await cache.addAll([
-            '/',
-            'index.html',
-            'manifest.json',
-            'icon.png'
+            basePath,
+            `${basePath}index.html`,
+            `${basePath}manifest.json`,
+            `${basePath}icon.png`
         ]);
         self.skipWaiting();
     })());
@@ -65,11 +66,11 @@ async function getDirHandle() {
         let request = indexedDB.open('yunDB', 1);
 
         request.onerror = () => {
-            resolve({ type: 'redirect', url: '/index.html' });
+            resolve({ type: 'redirect', url: `${basePath}index.html` });
         };
 
         request.onupgradeneeded = () => {
-            resolve({ type: 'redirect', url: '/index.html' });
+            resolve({ type: 'redirect', url: `${basePath}index.html` });
         }
 
         request.onsuccess = async (event) => {
@@ -87,13 +88,13 @@ async function getDirHandle() {
                 let dirHandle = getDirHandleRequest.result;
 
                 if (!dirHandle) {
-                    resolve({ type: 'redirect', url: '/index.html' });
+                    resolve({ type: 'redirect', url: `${basePath}index.html` });
                     return;
                 }
 
                 const permissionStatus = await dirHandle.queryPermission();
                 if (permissionStatus !== 'granted') {
-                    resolve({ type: 'redirect', url: '/index.html' });
+                    resolve({ type: 'redirect', url: `${basePath}index.html` });
                     return;
                 }
                 resolve(dirHandle);

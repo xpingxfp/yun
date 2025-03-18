@@ -9,6 +9,10 @@
     
 ### 运行环境
 
+- 进入下列网站：
+    - <https://xpingxfp.github.io/yun.github.io/>
+<br>
+
 - 使用Node.js运行服务器脚本:
     - 路径: `server/nodejs/http.js`
     - 端口: 2424

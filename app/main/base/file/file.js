@@ -60,15 +60,31 @@ export async function getCurrentFile(name) {
     return file;
 }
 
+async function getOrCreateHandle(parent, name, type = 'directory', options = { create: true }) {
+    try {
+        const method = type === 'directory' ? 'getDirectoryHandle' : 'getFileHandle';
+        return await parent[method](name, options);
+    } catch (err) {
+        if (err.name === "NotFoundError" && options.create) {
+            return await parent[method](name, { create: true });
+        }
+        throw err;
+    }
+}
+
 async function createLogFile() {
     try {
-        let current = await getCurrent();
-        let logDir = await current.getDirectoryHandle("logs", { create: false });
-        let now = new Date();
-        let timeString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-        let logFileName = timeString + ".log";
-        let file = await logDir.getFileHandle(logFileName, { create: true });
-        return file;
+        const currentDir = await getCurrent();
+
+        const logDir = await getOrCreateHandle(currentDir, "logs", 'directory', { create: true });
+
+        const now = new Date();
+        const timeString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const logFileName = `${timeString}.log`;
+
+        const logFile = await getOrCreateHandle(logDir, logFileName, 'file', { create: true });
+
+        return logFile;
     } catch (error) {
         console.error("创建日志文件时发生错误:", error);
     }
@@ -248,3 +264,5 @@ export function writeToLog(type, text) {
     let logEntry = `[${timeString}] [${type}]: ${text}\n`;
     logQueue.addWrite(logEntry);
 }
+
+writeToLog("INFO", "测试1");

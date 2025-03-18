@@ -9,7 +9,7 @@
             padding: 0;
             margin: 0;
             user-select: none;
-            box-shadow: 0 0 1px 1px #000;
+            /* box-shadow: 0 0 1px 1px #000; */
         }
 
         body {
@@ -42,6 +42,9 @@
             line-height: 30px;
             padding: 0 8px;
             z-index: 2;
+            color: #FFF;
+            text-shadow: 0 0 2px #000;
+            font-weight: 600;
         }
 
         .header .content button {
@@ -53,6 +56,9 @@
             border: none;
             border-radius: 5px;
             z-index: 2;
+            color: #FFF;
+            text-shadow: 0 0 2px #000;
+            font-weight: 600;
         }
 
         .header .content button:hover {
@@ -86,7 +92,7 @@
             height: 18%;
             width: 100%;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-evenly;
             text-align: center;
             align-items: center;
             bottom: 0;
@@ -106,7 +112,7 @@
         }
 
         footer .file:active {
-            background-color: #F2A7DE;
+            background-color: #f6a8e1;
         }
 
         button {
@@ -120,11 +126,12 @@
         }
 
         button:hover {
-            background-color: #F27ED38f;
+            box-shadow: 0 0 3px #000;
+
         }
 
         button:active {
-            background-color: #733C64;
+            background-color: #f6a8e1;
         }
 
         footer.none {
@@ -150,6 +157,8 @@
     </div>
     <footer></footer>
     <script>
+        let basePath = "/";
+
         async function openFile() {
             try {
                 let dirHandle = await window.showDirectoryPicker();
@@ -410,7 +419,7 @@
             let configFile = await TempDirHandle.getFileHandle("config.json", { create: true });
             let snapshotFile = await TempDirHandle.getFileHandle("snapshot.jpg", { create: true })
 
-            const imgUrl = '/icon.png';
+            const imgUrl = `${basePath}icon.png`;
 
             const response = await fetch(imgUrl);
             if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
